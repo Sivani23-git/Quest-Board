@@ -26,14 +26,68 @@ import adminRoutes from './routes/admin.routes.js';
 
 const app = express();
 
-// Security & Utility Middlewares
-app.use(helmet());
+// Trust reverse proxy (Render, Vercel, etc.) for correct client IP detection with rate limiter
+app.set('trust proxy', 1);
+
+// Security Headers
 app.use(
-  cors({
-    origin: process.env.CLIENT_URL || 'http://localhost:5173',
-    credentials: true,
+  helmet({
+    crossOriginResourcePolicy: { policy: 'cross-origin' },
   })
 );
+
+// Dynamic CORS configuration supporting Localhost, Vercel, and configured CLIENT_URL
+const defaultAllowedOrigins = [
+  'http://localhost:5173',
+  'http://localhost:3000',
+  'http://localhost:5174',
+  'http://127.0.0.1:5173',
+  'https://quest-board-nine-pi.vercel.app',
+];
+
+const getAllowedOrigins = () => {
+  const configured = (process.env.CLIENT_URL || '')
+    .split(',')
+    .map((url) => url.trim().replace(/\/+$/, ''))
+    .filter(Boolean);
+  return Array.from(new Set([...defaultAllowedOrigins, ...configured]));
+};
+
+const corsOptions = {
+  origin: (origin, callback) => {
+    // Allow non-browser requests (server-to-server, curl, Postman, mobile)
+    if (!origin) {
+      return callback(null, true);
+    }
+    const cleanOrigin = origin.trim().replace(/\/+$/, '');
+    const allowed = getAllowedOrigins();
+
+    // Direct match, Vercel preview domain match, or localhost match
+    if (
+      allowed.includes(cleanOrigin) ||
+      cleanOrigin.endsWith('.vercel.app') ||
+      cleanOrigin.includes('localhost') ||
+      cleanOrigin.includes('127.0.0.1')
+    ) {
+      return callback(null, true);
+    }
+
+    // Allow in non-production environments
+    if (process.env.NODE_ENV !== 'production') {
+      return callback(null, true);
+    }
+
+    return callback(new Error(`CORS origin '${origin}' not allowed by policy`));
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
+  exposedHeaders: ['Set-Cookie'],
+  optionsSuccessStatus: 200,
+};
+
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 app.use(express.json({ limit: '1mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use(mongoSanitize());

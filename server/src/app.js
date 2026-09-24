@@ -3,6 +3,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import mongoSanitize from 'express-mongo-sanitize';
 import morgan from 'morgan';
+import mongoose from 'mongoose';
 
 import { apiLimiter } from './middleware/rateLimiter.js';
 import { errorHandler } from './middleware/errorHandler.js';
@@ -99,9 +100,33 @@ if (process.env.NODE_ENV !== 'test') {
 // Global API Rate Limiter
 app.use('/api/', apiLimiter);
 
-// API Health Check
+// API Health Check with Database Connectivity Status
 app.get('/api/health', (req, res) => {
-  res.status(200).json({ status: 'healthy', timestamp: new Date() });
+  const isDbConnected = mongoose.connection.readyState === 1;
+  const statusStates = ['disconnected', 'connected', 'connecting', 'disconnecting'];
+  const dbState = statusStates[mongoose.connection.readyState] || 'unknown';
+
+  res.status(isDbConnected ? 200 : 503).json({
+    status: isDbConnected ? 'healthy' : 'degraded',
+    database: {
+      status: dbState,
+      connected: isDbConnected,
+      uriConfigured: Boolean(process.env.MONGODB_URI || process.env.MONGO_URI || process.env.DATABASE_URL),
+    },
+    timestamp: new Date(),
+  });
+});
+
+// Database Readiness Check Middleware for API Routes
+app.use('/api/v1', (req, res, next) => {
+  if (mongoose.connection.readyState !== 1 && process.env.NODE_ENV !== 'test') {
+    return res.status(503).json({
+      success: false,
+      message:
+        'Database connection is not ready. Please ensure MONGODB_URI is configured in your Render environment variables and allows network access (0.0.0.0/0 in MongoDB Atlas).',
+    });
+  }
+  next();
 });
 
 // API Routes

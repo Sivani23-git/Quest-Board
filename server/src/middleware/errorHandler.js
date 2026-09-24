@@ -33,6 +33,12 @@ export const errorHandler = (err, req, res, next) => {
     message = 'Your session has expired. Please log in again.';
   }
 
+  // Handle Mongoose connection and buffering errors
+  if (err.name === 'MongooseError' && err.message?.includes('buffering timed out')) {
+    statusCode = 503;
+    message = 'Database connection timed out. Please ensure MONGODB_URI is configured properly in Render and allows connections (0.0.0.0/0).';
+  }
+
   res.status(statusCode).json({
     success: false,
     message,

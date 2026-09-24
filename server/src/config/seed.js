@@ -6,6 +6,7 @@ import { Quest } from '../models/Quest.js';
 import { Quiz } from '../models/Quiz.js';
 import { CodingChallenge } from '../models/CodingChallenge.js';
 import { Challenge } from '../models/Challenge.js';
+import { seedCodingChallenges } from './seedCodingChallenges.js';
 
 export async function seedDatabase() {
   try {
@@ -120,47 +121,10 @@ export async function seedDatabase() {
       arrayQuiz = await Quiz.findOne();
     }
 
-    // 3. Seed Coding Challenges
-    let twoSumChallenge;
-    const twoSumStarterCode = {
-      javascript: `// Read input from stdin or parse arguments\nconst fs = require('fs');\nconst input = fs.readFileSync(0, 'utf-8').trim().split('\\n');\nconst nums = JSON.parse(input[0]);\nconst target = parseInt(input[1], 10);\n\nfunction twoSum(nums, target) {\n  // Write your solution here\n  \n}\n\nconsole.log(JSON.stringify(twoSum(nums, target)));`,
-      python: `import json\nimport sys\n\ninput_data = sys.stdin.read().strip().split('\\n')\nnums = json.loads(input_data[0])\ntarget = int(input_data[1])\n\ndef two_sum(nums, target):\n    # Write your solution here\n    pass\n\nprint(json.dumps(two_sum(nums, target)))`,
-      java: `import java.util.*;\nimport java.io.*;\n\npublic class Main {\n    public static int[] twoSum(int[] nums, int target) {\n        // Write your solution here\n        return new int[]{};\n    }\n\n    public static void main(String[] args) throws Exception {\n        Scanner sc = new Scanner(System.in);\n        if (!sc.hasNextLine()) return;\n        String line1 = sc.nextLine().trim();\n        String line2 = sc.hasNextLine() ? sc.nextLine().trim() : "0";\n        line1 = line1.replace("[", "").replace("]", "").trim();\n        String[] parts = line1.split(",");\n        int[] nums = new int[parts.length];\n        for (int i = 0; i < parts.length; i++) nums[i] = Integer.parseInt(parts[i].trim());\n        int target = Integer.parseInt(line2);\n        int[] res = twoSum(nums, target);\n        System.out.println(Arrays.toString(res).replace(" ", ""));\n    }\n}`,
-      cpp: `#include <iostream>\n#include <vector>\n#include <string>\n#include <sstream>\n\nusing namespace std;\n\nvector<int> twoSum(vector<int>& nums, int target) {\n    // Write your solution here\n    return {};\n}\n\nint main() {\n    string line1, line2;\n    if (!(cin >> line1 >> line2)) return 0;\n    vector<int> nums;\n    string cleaned = "";\n    for (char c : line1) {\n        if ((c >= '0' && c <= '9') || c == '-' || c == ',') cleaned += c;\n    }\n    stringstream ss(cleaned);\n    string token;\n    while (getline(ss, token, ',')) {\n        if (!token.empty()) nums.push_back(stoi(token));\n    }\n    int target = stoi(line2);\n    vector<int> res = twoSum(nums, target);\n    cout << "[" << (res.size() > 0 ? to_string(res[0]) : "") << "," << (res.size() > 1 ? to_string(res[1]) : "") << "]" << endl;\n    return 0;\n}`,
-    };
-
-    const codingCount = await CodingChallenge.countDocuments();
-    if (codingCount === 0) {
-      twoSumChallenge = await CodingChallenge.create({
-        title: 'Two Sum Problem',
-        description:
-          'Given an array of integers `nums` and an integer `target`, return the indices of the two numbers such that they add up to `target`. Assume each input has exactly one solution and you may not use the same element twice.\n\nInput format: JSON array and integer\nExample:\n`[2,7,11,15]\n9` -> Output: `[0,1]`',
-        difficulty: 'easy',
-        category: 'arrays',
-        skillId: dsaSkill?._id || null,
-        starterCode: twoSumStarterCode,
-        testCases: [
-          { input: '[2,7,11,15]\n9', expected: '[0,1]', isHidden: false },
-          { input: '[3,2,4]\n6', expected: '[1,2]', isHidden: false },
-          { input: '[3,3]\n6', expected: '[0,1]', isHidden: true },
-        ],
-        examples: [
-          { input: 'nums = [2,7,11,15], target = 9', output: '[0,1]', explanation: 'Because nums[0] + nums[1] == 9, we return [0, 1].' },
-        ],
-        constraints: '2 <= nums.length <= 10^4, -10^9 <= nums[i] <= 10^9',
-        xpReward: 100,
-        coinReward: 25,
-        isOfficial: true,
-        createdBy: adminUser._id,
-      });
-      console.log('[Seed] Default Coding Challenges created.');
-    } else {
-      twoSumChallenge = await CodingChallenge.findOneAndUpdate(
-        { title: 'Two Sum Problem' },
-        { $set: { starterCode: twoSumStarterCode } },
-        { new: true }
-      );
-    }
+    // 3. Seed Coding Challenges for All Supported Language Learning Paths
+    await seedCodingChallenges(adminUser._id);
+    const twoSumChallenge = await CodingChallenge.findOne({ title: 'Two Sum with Hash Map', language: 'python' }) ||
+      await CodingChallenge.findOne({ language: 'python' });
 
     // 4. Seed Official Quests
     const questCount = await Quest.countDocuments({ isOfficial: true });

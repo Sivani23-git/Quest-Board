@@ -146,6 +146,77 @@ export function ProfilePage() {
         </div>
       </div>
 
+      {/* Developer Skills / Language Mastery */}
+      <div className="p-6 sm:p-8 rounded-2xl bg-bg-card border border-bg-border space-y-4">
+        <div className="flex items-center justify-between">
+          <h2 className="text-base font-bold text-white flex items-center gap-2">
+            <span className="text-lg">💻</span>
+            <span>Developer Skills & Language Mastery</span>
+          </h2>
+          <Link
+            to="/coding"
+            className="text-xs text-brand-accent hover:underline font-semibold"
+          >
+            Explore Academy →
+          </Link>
+        </div>
+
+        <div className="grid sm:grid-cols-2 gap-4">
+          {[
+            { id: 'python', name: 'Python', icon: '🐍', color: '#38BDF8' },
+            { id: 'javascript', name: 'JavaScript', icon: '🟨', color: '#FACC15' },
+            { id: 'java', name: 'Java', icon: '☕', color: '#FB923C' },
+            { id: 'cpp', name: 'C++', icon: '⚡', color: '#818CF8' },
+          ].map((lang) => {
+            const prog = (profile.languageProgress || []).find((p) => p.language === lang.id);
+            const level = prog?.languageLevel || 1;
+            const xp = prog?.languageXP || 0;
+            const completedCount = prog?.completedChallenges?.length || 0;
+            const maxLevelXP = (level * level) * 25;
+            const prevLevelXP = ((level - 1) * (level - 1)) * 25;
+            const progressPercent = Math.min(
+              100,
+              Math.max(5, Math.round(((xp - prevLevelXP) / Math.max(1, maxLevelXP - prevLevelXP)) * 100))
+            );
+
+            return (
+              <div
+                key={lang.id}
+                className="p-4 rounded-xl bg-bg-surface border border-bg-border flex flex-col justify-between gap-3"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2.5">
+                    <span className="text-2xl">{lang.icon}</span>
+                    <div>
+                      <div className="font-bold text-white text-sm">{lang.name}</div>
+                      <div className="text-[11px] text-text-muted">
+                        {completedCount} challenges solved • {xp} XP
+                      </div>
+                    </div>
+                  </div>
+
+                  <span className="text-xs font-black text-brand-accent bg-brand-primary/15 border border-brand-primary/30 px-2.5 py-1 rounded-lg">
+                    Lv. {level}
+                  </span>
+                </div>
+
+                <div className="space-y-1">
+                  <div className="h-2 w-full bg-bg-card rounded-full overflow-hidden border border-bg-border/60">
+                    <div
+                      className="h-full rounded-full transition-all duration-500"
+                      style={{
+                        width: `${progressPercent}%`,
+                        backgroundColor: lang.color,
+                      }}
+                    />
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
       {/* Unlocked Badges & Activity Feed */}
       <div className="grid lg:grid-cols-2 gap-6">
         {/* Achievements */}

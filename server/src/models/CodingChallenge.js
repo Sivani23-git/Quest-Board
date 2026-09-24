@@ -34,6 +34,39 @@ const codingChallengeSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    language: {
+      type: String,
+      enum: ['python', 'java', 'javascript', 'cpp'],
+      required: true,
+      default: 'python',
+      index: true,
+    },
+    topic: {
+      type: String,
+      required: true,
+      default: 'Fundamentals',
+      index: true,
+    },
+    learningStage: {
+      type: Number,
+      required: true,
+      default: 1,
+      index: true,
+    },
+    stageName: {
+      type: String,
+      default: 'Fundamentals',
+    },
+    order: {
+      type: Number,
+      default: 1,
+    },
+    prerequisites: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'CodingChallenge',
+      },
+    ],
     difficulty: {
       type: String,
       enum: ['easy', 'medium', 'hard', 'epic', 'legendary'],
@@ -42,7 +75,6 @@ const codingChallengeSchema = new mongoose.Schema(
     },
     category: {
       type: String,
-      enum: ['arrays', 'strings', 'dp', 'graphs', 'sorting', 'math', 'other'],
       default: 'arrays',
       index: true,
     },
@@ -54,19 +86,19 @@ const codingChallengeSchema = new mongoose.Schema(
     starterCode: {
       javascript: {
         type: String,
-        default: '// Write your solution here\nfunction solution(input) {\n  \n}\n',
+        default: '',
       },
       python: {
         type: String,
-        default: '# Write your solution here\ndef solution(input):\n    pass\n',
+        default: '',
       },
       java: {
         type: String,
-        default: 'class Solution {\n    public static void main(String[] args) {\n        // Write your solution here\n    }\n}\n',
+        default: '',
       },
       cpp: {
         type: String,
-        default: '#include <iostream>\nusing namespace std;\n\nint main() {\n    // Write your solution here\n    return 0;\n}\n',
+        default: '',
       },
     },
     testCases: [testCaseSchema],
@@ -78,13 +110,13 @@ const codingChallengeSchema = new mongoose.Schema(
     xpReward: {
       type: Number,
       default: function () {
-        return DIFFICULTY_REWARDS[this.difficulty]?.xp || 100;
+        return (this?.difficulty && DIFFICULTY_REWARDS[this.difficulty]?.xp) || 100;
       },
     },
     coinReward: {
       type: Number,
       default: function () {
-        return DIFFICULTY_REWARDS[this.difficulty]?.coins || 25;
+        return (this?.difficulty && DIFFICULTY_REWARDS[this.difficulty]?.coins) || 25;
       },
     },
     isOfficial: {
@@ -102,5 +134,7 @@ const codingChallengeSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
+
+codingChallengeSchema.index({ language: 1, learningStage: 1, order: 1 });
 
 export const CodingChallenge = mongoose.model('CodingChallenge', codingChallengeSchema);

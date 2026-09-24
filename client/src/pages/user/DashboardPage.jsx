@@ -356,7 +356,7 @@ export function DashboardPage() {
                 className="p-3 rounded-xl bg-bg-surface hover:bg-bg-hover border border-bg-border text-center transition-colors group"
               >
                 <Code2 className="w-5 h-5 text-amber-400 mx-auto mb-1 group-hover:scale-110 transition-transform" />
-                <span className="text-xs font-semibold text-text-primary block">Coding Arena</span>
+                <span className="text-xs font-semibold text-text-primary block">Coding Academy</span>
               </Link>
 
               <Link

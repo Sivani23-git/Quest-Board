@@ -19,7 +19,7 @@ const coinTransactionSchema = new mongoose.Schema(
     },
     source: {
       type: String,
-      enum: ['quest', 'achievement', 'challenge', 'reward_redemption', 'admin'],
+      enum: ['quest', 'achievement', 'challenge', 'coding', 'quiz', 'reward_redemption', 'admin'],
       required: true,
       index: true,
     },

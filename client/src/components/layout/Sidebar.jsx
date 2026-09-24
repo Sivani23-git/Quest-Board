@@ -19,7 +19,7 @@ const NAV_ITEMS = [
   { name: 'Quests', path: '/quests', icon: Sword },
   { name: 'Goals & Questlines', path: '/goals', icon: Target },
   { name: 'Skill Tree', path: '/skills', icon: Network },
-  { name: 'Coding Sandbox', path: '/coding', icon: Code2 },
+  { name: 'Coding Academy', path: '/coding', icon: Code2 },
   { name: 'Knowledge Quizzes', path: '/quizzes', icon: HelpCircle },
   { name: 'Reward Shop', path: '/rewards', icon: Gift },
   { name: 'Achievements', path: '/achievements', icon: Trophy },

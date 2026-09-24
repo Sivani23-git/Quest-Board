@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import Editor from '@monaco-editor/react';
 import { useAuth } from '../../contexts/AuthContext';
 import {
@@ -13,45 +13,72 @@ import {
   Sparkles,
   Terminal,
   AlertCircle,
+  Trophy,
+  ArrowRight,
+  BookOpen,
 } from 'lucide-react';
 import api from '../../services/api';
 
-const LANGUAGE_FILENAMES = {
-  javascript: 'solution.js',
-  python: 'solution.py',
-  java: 'Solution.java',
-  cpp: 'solution.cpp',
+const LANGUAGE_CONFIG = {
+  python: {
+    name: 'Python',
+    icon: '🐍',
+    filename: 'solution.py',
+    monacoLang: 'python',
+    badgeClass: 'bg-sky-500/15 text-sky-400 border-sky-500/30',
+  },
+  javascript: {
+    name: 'JavaScript',
+    icon: '🟨',
+    filename: 'solution.js',
+    monacoLang: 'javascript',
+    badgeClass: 'bg-amber-500/15 text-amber-400 border-amber-500/30',
+  },
+  java: {
+    name: 'Java',
+    icon: '☕',
+    filename: 'Solution.java',
+    monacoLang: 'java',
+    badgeClass: 'bg-orange-500/15 text-orange-400 border-orange-500/30',
+  },
+  cpp: {
+    name: 'C++',
+    icon: '⚡',
+    filename: 'solution.cpp',
+    monacoLang: 'cpp',
+    badgeClass: 'bg-indigo-500/15 text-indigo-400 border-indigo-500/30',
+  },
 };
 
 export function CodingDetailPage() {
   const { id } = useParams();
-  const { user, updateUserMetrics, triggerLevelUp } = useAuth();
+  const navigate = useNavigate();
+  const { user, updateUserMetrics } = useAuth();
+
   const [challenge, setChallenge] = useState(null);
-  const [language, setLanguage] = useState('javascript');
-  const [userCodes, setUserCodes] = useState({
-    javascript: '',
-    python: '',
-    java: '',
-    cpp: '',
-  });
+  const [nextChallenge, setNextChallenge] = useState(null);
+  const [isSolved, setIsSolved] = useState(false);
+  const [code, setCode] = useState('');
   const [validationError, setValidationError] = useState(null);
   const [loading, setLoading] = useState(true);
   const [executing, setExecuting] = useState(false);
   const [executionResult, setExecutionResult] = useState(null);
   const [activeTab, setActiveTab] = useState('description');
+  const [showRewardModal, setShowRewardModal] = useState(false);
 
   useEffect(() => {
     async function loadChallenge() {
+      setLoading(true);
+      setExecutionResult(null);
+      setShowRewardModal(false);
       try {
         const res = await api.get(`/coding/${id}`);
-        setChallenge(res.data.challenge);
-        // Code editor starts completely BLANK with empty string
-        setUserCodes({
-          javascript: '',
-          python: '',
-          java: '',
-          cpp: '',
-        });
+        const ch = res.data.challenge;
+        setChallenge(ch);
+        setNextChallenge(res.data.nextChallenge || null);
+        setIsSolved(res.data.isSolved || false);
+        // Editor starts completely BLANK with NO starter code/boilerplate
+        setCode('');
       } catch (err) {
         console.error('Failed to load challenge:', err);
       } finally {
@@ -61,30 +88,15 @@ export function CodingDetailPage() {
     loadChallenge();
   }, [id]);
 
-  const handleLanguageChange = (newLang) => {
-    setLanguage(newLang);
-    setValidationError(null);
-    // Editor switches language highlighting without inserting any boilerplate
-    if (!userCodes[newLang]) {
-      setUserCodes((prev) => ({
-        ...prev,
-        [newLang]: '',
-      }));
-    }
-  };
-
   const handleCodeChange = (newCode) => {
     setValidationError(null);
-    setUserCodes((prev) => ({
-      ...prev,
-      [language]: newCode || '',
-    }));
+    setCode(newCode || '');
   };
 
   const handleRunCode = async () => {
-    const currentCode = (userCodes[language] || '').trim();
-    if (!currentCode) {
-      setValidationError('Please write your solution before running the code.');
+    const trimmedCode = (code || '').trim();
+    if (!trimmedCode) {
+      setValidationError('Please write your solution before running tests.');
       return;
     }
 
@@ -93,8 +105,8 @@ export function CodingDetailPage() {
     setExecutionResult(null);
     try {
       const res = await api.post(`/coding/${id}/run`, {
-        language,
-        code: userCodes[language],
+        language: challenge.language,
+        code,
       });
       setExecutionResult(res.data);
       setActiveTab('results');
@@ -106,8 +118,8 @@ export function CodingDetailPage() {
   };
 
   const handleSubmitCode = async () => {
-    const currentCode = (userCodes[language] || '').trim();
-    if (!currentCode) {
+    const trimmedCode = (code || '').trim();
+    if (!trimmedCode) {
       setValidationError('Please write your solution before submitting.');
       return;
     }
@@ -117,17 +129,23 @@ export function CodingDetailPage() {
     setExecutionResult(null);
     try {
       const res = await api.post(`/coding/${id}/submit`, {
-        language,
-        code: userCodes[language],
+        language: challenge.language,
+        code,
       });
       setExecutionResult(res.data);
       setActiveTab('results');
 
       if (res.data.isAllPassed) {
-        updateUserMetrics({
-          totalXP: (user.totalXP || 0) + (challenge.xpReward || 100),
-          coinBalance: (user.coinBalance || 0) + (challenge.coinReward || 25),
-        });
+        setIsSolved(true);
+        setShowRewardModal(true);
+
+        // Update user stats in context if XP was awarded
+        if (res.data.xpEarned) {
+          updateUserMetrics({
+            totalXP: (user?.totalXP || 0) + res.data.xpEarned,
+            coinBalance: (user?.coinBalance || 0) + res.data.coinsEarned,
+          });
+        }
       }
     } catch (err) {
       alert(err.message || 'Submission failed');
@@ -138,47 +156,63 @@ export function CodingDetailPage() {
 
   if (loading) {
     return (
-      <div className="py-20 text-center">
-        <div className="w-8 h-8 border-4 border-amber-400 border-t-transparent rounded-full animate-spin mx-auto" />
+      <div className="py-24 text-center">
+        <div className="w-10 h-10 border-4 border-amber-400 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+        <p className="text-xs text-text-secondary">Loading sandbox environment...</p>
       </div>
     );
   }
 
-  if (!challenge) return <div>Challenge not found.</div>;
+  if (!challenge) {
+    return (
+      <div className="p-8 text-center space-y-4">
+        <h2 className="text-xl font-bold text-white">Coding challenge not found</h2>
+        <Link to="/coding" className="btn-primary text-xs py-2 px-4 inline-flex items-center gap-1.5">
+          <ArrowLeft className="w-4 h-4" />
+          <span>Return to Coding Academy</span>
+        </Link>
+      </div>
+    );
+  }
 
-  const currentEditorCode = userCodes[language] || '';
+  const langKey = (challenge.language || 'python').toLowerCase();
+  const langConfig = LANGUAGE_CONFIG[langKey] || LANGUAGE_CONFIG.python;
 
   return (
-    <div className="space-y-4">
-      {/* Top Bar */}
-      <div className="flex items-center justify-between gap-4">
-        <Link
-          to="/coding"
-          className="inline-flex items-center gap-1.5 text-xs text-text-secondary hover:text-white"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          <span>Back to Arena</span>
-        </Link>
-
+    <div className="space-y-4 animate-fade-in">
+      {/* Top Header Bar */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-bg-card p-3.5 rounded-2xl border border-bg-border">
         <div className="flex items-center gap-3">
-          <select
-            value={language}
-            onChange={(e) => handleLanguageChange(e.target.value)}
-            className="bg-bg-card border border-bg-border rounded-xl px-3 py-1.5 text-xs text-text-primary focus:outline-none focus:border-brand-primary"
+          <Link
+            to={`/coding?lang=${langKey}`}
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-text-secondary hover:text-white transition-colors bg-bg-surface border border-bg-border px-3 py-1.5 rounded-xl hover:border-brand-primary/40"
           >
-            <option value="javascript">JavaScript (Node.js)</option>
-            <option value="python">Python 3</option>
-            <option value="java">Java</option>
-            <option value="cpp">C++</option>
-          </select>
+            <ArrowLeft className="w-4 h-4 text-brand-accent" />
+            <span>{langConfig.name} Path</span>
+          </Link>
 
+          {/* Non-editable Language Pill */}
+          <div
+            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-bold border ${langConfig.badgeClass}`}
+          >
+            <span>{langConfig.icon}</span>
+            <span>{langConfig.name}</span>
+          </div>
+
+          <span className="text-xs text-text-muted hidden md:inline">
+            Stage {challenge.learningStage || 1}: {challenge.stageName || challenge.topic}
+          </span>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="flex items-center gap-2.5">
           <button
             onClick={handleRunCode}
             disabled={executing}
-            className="btn-secondary text-xs py-2 px-3 flex items-center gap-1.5"
+            className="btn-secondary text-xs py-2 px-3.5 flex items-center gap-1.5"
           >
             <Play className="w-3.5 h-3.5 text-emerald-400 fill-emerald-400" />
-            <span>{executing ? 'Running...' : 'Run Samples'}</span>
+            <span>{executing ? 'Executing...' : 'Run Samples'}</span>
           </button>
 
           <button
@@ -192,7 +226,7 @@ export function CodingDetailPage() {
         </div>
       </div>
 
-      {/* Validation Banner if user clicks run/submit with empty code */}
+      {/* Validation Message */}
       {validationError && (
         <div className="flex items-center gap-2.5 p-3 rounded-xl bg-amber-500/15 border border-amber-500/40 text-amber-300 text-xs font-semibold animate-fade-in">
           <AlertCircle className="w-4 h-4 shrink-0 text-amber-400" />
@@ -200,9 +234,59 @@ export function CodingDetailPage() {
         </div>
       )}
 
+      {/* Victory Reward Banner on Pass */}
+      {showRewardModal && executionResult?.isAllPassed && (
+        <div className="p-4 rounded-2xl bg-gradient-to-r from-emerald-500/20 via-teal-500/15 to-emerald-500/20 border border-emerald-500/40 flex flex-col sm:flex-row sm:items-center justify-between gap-4 animate-fade-in shadow-lg">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400 shrink-0">
+              <Trophy className="w-5 h-5 text-yellow-400" />
+            </div>
+            <div>
+              <div className="text-sm font-bold text-white flex items-center gap-2">
+                <span>Challenge Solved!</span>
+                {executionResult.isFirstSolve && (
+                  <span className="text-[10px] uppercase font-bold text-brand-accent bg-brand-primary/20 px-2 py-0.5 rounded-full">
+                    First Solve Bonus
+                  </span>
+                )}
+              </div>
+              <div className="text-xs text-emerald-300">
+                {executionResult.xpEarned > 0 ? (
+                  <span>
+                    +{executionResult.xpEarned} XP & +{executionResult.coinsEarned} Coins earned!
+                  </span>
+                ) : (
+                  <span>Challenge mastered! Practice repeated.</span>
+                )}
+              </div>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2">
+            {nextChallenge ? (
+              <Link
+                to={`/coding/${nextChallenge._id}`}
+                className="btn-primary text-xs py-2 px-3.5 flex items-center gap-1.5 shadow-md shadow-brand-primary/30"
+              >
+                <span>Next Challenge</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            ) : (
+              <Link
+                to={`/coding?lang=${langKey}`}
+                className="btn-primary text-xs py-2 px-3.5 flex items-center gap-1.5"
+              >
+                <span>View Learning Path</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* Main Split Interface */}
       <div className="grid lg:grid-cols-12 gap-4 h-[75vh]">
-        {/* Left Side: Problem Statement & Tabs (5 Cols) */}
+        {/* Left Side: Problem Statement & Results Tab (5 Cols) */}
         <div className="lg:col-span-5 flex flex-col rounded-2xl bg-bg-card border border-bg-border overflow-hidden">
           <div className="flex items-center gap-2 p-2 border-b border-bg-border bg-bg-surface/50">
             <button
@@ -234,8 +318,14 @@ export function CodingDetailPage() {
                   <div className="flex items-center gap-2 mb-2">
                     <span className={`badge-${challenge.difficulty}`}>{challenge.difficulty}</span>
                     <span className="text-xs text-text-muted uppercase font-bold">
-                      {challenge.category}
+                      {challenge.topic || challenge.category}
                     </span>
+                    {isSolved && (
+                      <span className="text-xs font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full flex items-center gap-1">
+                        <CheckCircle2 className="w-3 h-3" />
+                        <span>Solved</span>
+                      </span>
+                    )}
                   </div>
                   <h1 className="text-xl font-bold text-white">{challenge.title}</h1>
                 </div>
@@ -243,6 +333,13 @@ export function CodingDetailPage() {
                 <div className="text-xs sm:text-sm text-text-secondary leading-relaxed whitespace-pre-wrap">
                   {challenge.description}
                 </div>
+
+                {challenge.constraints && (
+                  <div className="p-3 rounded-xl bg-bg-surface border border-bg-border text-xs space-y-1">
+                    <div className="font-bold text-text-muted uppercase text-[10px]">Constraints</div>
+                    <div className="text-text-secondary font-mono text-[11px]">{challenge.constraints}</div>
+                  </div>
+                )}
 
                 {challenge.examples && challenge.examples.length > 0 && (
                   <div className="space-y-3 pt-2">
@@ -359,16 +456,19 @@ export function CodingDetailPage() {
         {/* Right Side: Monaco Code Editor (7 Cols) */}
         <div className="lg:col-span-7 rounded-2xl bg-bg-card border border-bg-border overflow-hidden flex flex-col">
           <div className="p-3 bg-bg-surface/60 border-b border-bg-border text-xs font-mono text-text-muted flex items-center justify-between">
-            <span>{LANGUAGE_FILENAMES[language] || 'solution.txt'}</span>
-            <span className="text-[11px] text-brand-accent">Sandboxed Piston Engine</span>
+            <div className="flex items-center gap-2">
+              <span>{langConfig.icon}</span>
+              <span className="text-white font-bold">{langConfig.filename}</span>
+            </div>
+            <span className="text-[11px] text-brand-accent">Isolated Piston Runtime Sandbox</span>
           </div>
 
-          <div className="flex-1 min-h-[400px]">
+          <div className="flex-1 min-h-[420px]">
             <Editor
               height="100%"
-              language={language === 'cpp' ? 'cpp' : language}
+              language={langConfig.monacoLang}
               theme="vs-dark"
-              value={currentEditorCode}
+              value={code}
               onChange={handleCodeChange}
               options={{
                 minimap: { enabled: false },

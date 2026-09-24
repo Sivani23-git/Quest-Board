@@ -1,8 +1,13 @@
 import axios from 'axios';
 import { CodingChallenge } from '../models/CodingChallenge.js';
 import { CodingSubmission } from '../models/CodingSubmission.js';
+import { UserLanguageProgress } from '../models/UserLanguageProgress.js';
 import { AppError } from '../utils/AppError.js';
 import { ActivityService } from './ActivityService.js';
+import { XPService } from './XPService.js';
+import { CoinService } from './CoinService.js';
+import { StreakService } from './StreakService.js';
+import { AchievementService } from './AchievementService.js';
 
 // Map languages to Piston execution runtimes
 const PISTON_LANGUAGE_MAP = {
@@ -11,6 +16,12 @@ const PISTON_LANGUAGE_MAP = {
   java: { language: 'java', version: '15.0.2' },
   cpp: { language: 'c++', version: '10.2.0' },
 };
+
+export function calculateLanguageLevel(xp) {
+  if (!xp || xp <= 0) return 1;
+  // Level curve: Level 1 (0 XP), Level 2 (100 XP), Level 3 (250 XP), Level 4 (450 XP), etc.
+  return Math.floor(Math.sqrt(xp / 25)) + 1;
+}
 
 function getPistonExecuteUrl() {
   const rawUrl =
@@ -55,9 +66,20 @@ export class CodingService {
       throw new AppError('Coding challenge not found', 404);
     }
 
-    const runtime = PISTON_LANGUAGE_MAP[language.toLowerCase()];
+    const challengeLang = (challenge.language || 'python').toLowerCase();
+    const targetLang = (language || challengeLang).toLowerCase();
+
+    // Verify language matches challenge
+    if (challengeLang !== targetLang) {
+      throw new AppError(
+        `This coding challenge belongs to the ${challengeLang.toUpperCase()} learning path. Code must be written in ${challengeLang}.`,
+        400
+      );
+    }
+
+    const runtime = PISTON_LANGUAGE_MAP[targetLang];
     if (!runtime) {
-      throw new AppError(`Unsupported language: ${language}`, 400);
+      throw new AppError(`Unsupported language: ${targetLang}`, 400);
     }
 
     // Select test cases to run
@@ -88,7 +110,7 @@ export class CodingService {
           { timeout: 12000 }
         );
       } catch (err) {
-        // Infrastructure / service error (connection refused, timeout, HTTP 5xx, or whitelist rejection)
+        // Infrastructure / service error
         const isNetworkOrServiceError =
           !err.response ||
           err.response.status >= 500 ||
@@ -104,11 +126,10 @@ export class CodingService {
           throw new AppError('Code execution service is unavailable.', 503);
         }
 
-        // If Piston returned a 400 (e.g. language not supported)
         throw new AppError(err.response?.data?.message || 'Execution service error.', 400);
       }
 
-      // Check for whitelist error in payload if 200 was returned with error body
+      // Check for whitelist error in payload
       const rawStdout = response.data.run?.stdout || '';
       const rawStderr = response.data.run?.stderr || '';
       const rawOutput = response.data.run?.output || '';
@@ -140,37 +161,160 @@ export class CodingService {
     const isAllPassed = passedCount === totalTests;
     const totalExecutionTime = Date.now() - startTime;
 
-    const submission = await CodingSubmission.create({
-      userId,
-      challengeId,
-      questId,
-      language,
-      code,
-      status: isAllPassed ? 'passed' : 'failed',
-      testResults,
-      totalTests,
-      passedTests: passedCount,
-      executionTimeMs: totalExecutionTime,
-    });
-
-    if (isSubmit && isAllPassed) {
-      await ActivityService.log(userId, {
-        type: 'coding_solved',
-        title: `Solved Challenge: ${challenge.title}`,
-        referenceId: challenge._id,
-        referenceModel: 'CodingChallenge',
-        metadata: { language, challengeTitle: challenge.title },
+    let submission = null;
+    if (isSubmit) {
+      submission = await CodingSubmission.create({
+        userId,
+        challengeId,
+        questId,
+        language: targetLang,
+        code,
+        status: isAllPassed ? 'passed' : 'failed',
+        testResults,
+        totalTests,
+        passedTests: passedCount,
+        executionTimeMs: totalExecutionTime,
+        xpAwarded: false,
       });
     }
 
+    let xpEarned = 0;
+    let coinsEarned = 0;
+    let isFirstSolve = false;
+    let languageProgress = null;
+
+    if (isSubmit && isAllPassed) {
+      // Check if user has previously solved this challenge via UserLanguageProgress
+      const existingProgress = await UserLanguageProgress.findOne({
+        userId,
+        language: targetLang,
+        completedChallenges: challenge._id,
+      });
+
+      if (!existingProgress) {
+        isFirstSolve = true;
+        xpEarned = challenge.xpReward || 100;
+        coinsEarned = challenge.coinReward || 25;
+
+        // 1. Award Global XP
+        await XPService.award(
+          userId,
+          xpEarned,
+          'coding',
+          challenge._id,
+          'CodingChallenge',
+          `Solved ${challenge.language.toUpperCase()} Challenge: ${challenge.title}`
+        );
+
+        // 2. Award Coins
+        await CoinService.award(
+          userId,
+          coinsEarned,
+          'coding',
+          challenge._id,
+          `Reward for ${challenge.title}`
+        );
+
+        // 3. Update User Language Learning Progress
+        let progressDoc = await UserLanguageProgress.findOne({
+          userId,
+          language: targetLang,
+        });
+
+        if (!progressDoc) {
+          progressDoc = await UserLanguageProgress.create({
+            userId,
+            language: targetLang,
+            currentStage: challenge.learningStage || 1,
+            completedChallenges: [challenge._id],
+            languageXP: xpEarned,
+            languageLevel: calculateLanguageLevel(xpEarned),
+            lastActiveAt: new Date(),
+          });
+        } else {
+          progressDoc.completedChallenges.addToSet(challenge._id);
+          progressDoc.languageXP = (progressDoc.languageXP || 0) + xpEarned;
+          progressDoc.languageLevel = calculateLanguageLevel(progressDoc.languageXP);
+          progressDoc.lastActiveAt = new Date();
+
+          // Unlock stage if all challenges in currentStage are completed
+          const stageChallenges = await CodingChallenge.find({
+            language: targetLang,
+            learningStage: progressDoc.currentStage,
+          }).select('_id');
+
+          const completedSet = new Set(progressDoc.completedChallenges.map((id) => id.toString()));
+          const isStageFinished = stageChallenges.every((c) => completedSet.has(c._id.toString()));
+
+          if (isStageFinished && challenge.learningStage >= progressDoc.currentStage) {
+            progressDoc.currentStage = challenge.learningStage + 1;
+          }
+
+          await progressDoc.save();
+        }
+
+        languageProgress = {
+          language: targetLang,
+          languageXP: progressDoc.languageXP,
+          languageLevel: progressDoc.languageLevel,
+          currentStage: progressDoc.currentStage,
+          completedCount: progressDoc.completedChallenges.length,
+        };
+
+        // 4. Update Daily Streak
+        await StreakService.update(userId);
+
+        // 5. Evaluate Achievements
+        await AchievementService.evaluate(userId);
+
+        // 6. Log Activity
+        await ActivityService.log(userId, {
+          type: 'coding_solved',
+          title: `Mastered ${challenge.language.toUpperCase()}: ${challenge.title}`,
+          referenceId: challenge._id,
+          referenceModel: 'CodingChallenge',
+          metadata: {
+            language: targetLang,
+            challengeTitle: challenge.title,
+            stage: challenge.learningStage,
+            xp: xpEarned,
+            coins: coinsEarned,
+          },
+        });
+
+        submission.xpAwarded = true;
+        await submission.save();
+      } else {
+        // Fetch current progress
+        const progressDoc = await UserLanguageProgress.findOne({
+          userId,
+          language: targetLang,
+        });
+
+        if (progressDoc) {
+          languageProgress = {
+            language: targetLang,
+            languageXP: progressDoc.languageXP,
+            languageLevel: progressDoc.languageLevel,
+            currentStage: progressDoc.currentStage,
+            completedCount: progressDoc.completedChallenges.length,
+          };
+        }
+      }
+    }
+
     return {
-      submissionId: submission._id,
-      status: submission.status,
+      submissionId: submission?._id || null,
+      status: submission?.status || (isAllPassed ? 'passed' : 'failed'),
       passedTests: passedCount,
       totalTests,
       isAllPassed,
       executionTimeMs: totalExecutionTime,
       testResults,
+      xpEarned,
+      coinsEarned,
+      isFirstSolve,
+      languageProgress,
     };
   }
 }

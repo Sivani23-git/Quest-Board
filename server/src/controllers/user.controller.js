@@ -2,6 +2,7 @@ import { User } from '../models/User.js';
 import { Activity } from '../models/Activity.js';
 import { UserAchievement } from '../models/UserAchievement.js';
 import { UserSkill } from '../models/UserSkill.js';
+import { UserLanguageProgress } from '../models/UserLanguageProgress.js';
 import { Follow } from '../models/Follow.js';
 import { getLevelProgress } from '../utils/levelUtils.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
@@ -28,10 +29,11 @@ export const getPublicProfile = asyncHandler(async (req, res, next) => {
     });
   }
 
-  const [achievements, skills, activities, followerCount, followingCount, isFollowing] = await Promise.all([
+  const [achievements, skills, activities, languageProgress, followerCount, followingCount, isFollowing] = await Promise.all([
     UserAchievement.find({ userId: user._id }).populate('achievementId').sort({ earnedAt: -1 }),
     UserSkill.find({ userId: user._id, isUnlocked: true }).populate('skillId').sort({ level: -1 }),
     Activity.find({ userId: user._id, isPublic: true }).sort({ createdAt: -1 }).limit(15),
+    UserLanguageProgress.find({ userId: user._id }),
     Follow.countDocuments({ followingId: user._id }),
     Follow.countDocuments({ followerId: user._id }),
     req.user?.userId ? Follow.exists({ followerId: req.user.userId, followingId: user._id }) : false,
@@ -55,6 +57,7 @@ export const getPublicProfile = asyncHandler(async (req, res, next) => {
       progress: getLevelProgress(user.totalXP),
       achievements,
       skills,
+      languageProgress,
       activities,
     },
   });

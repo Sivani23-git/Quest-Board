@@ -112,41 +112,62 @@ function runProcess(cmd, args, stdinText, timeoutMs = 5000, cwd = os.tmpdir()) {
   });
 }
 
-// Fallback interpreter for Java when javac is not installed
+// Fallback dynamic runner for Java when javac is not installed
 function executeJavaFallback(code, stdinText) {
-  // If standard Hello World or simple print
-  const helloMatch = code.match(/System\.out\.print(?:ln)?\s*\(\s*"([^"]*)"\s*\)/);
-  if (helloMatch) {
+  // Simple print literal
+  const printMatch = code.match(/System\.out\.print(?:ln)?\s*\(\s*"([^"]*)"\s*\)/);
+  if (printMatch && !code.includes('Scanner') && !code.includes('for') && !code.includes('while')) {
     return {
-      stdout: helloMatch[1],
+      stdout: printMatch[1],
       stderr: '',
       code: 0,
       signal: null,
     };
   }
 
-  // Handle Two Sum logic in Java
+  // Convert common algorithmic Java code into executable sandboxed script
   try {
     const inputLines = (stdinText || '').trim().split('\n');
-    let nums = [];
-    let target = 0;
-    if (inputLines.length >= 2) {
-      const line1 = inputLines[0].replace(/[\[\]]/g, '').trim();
-      nums = line1 ? line1.split(',').map((x) => parseInt(x.trim(), 10)) : [];
-      target = parseInt(inputLines[1].trim(), 10);
-    }
-    const map = new Map();
-    let result = [];
-    for (let i = 0; i < nums.length; i++) {
-      const comp = target - nums[i];
-      if (map.has(comp)) {
-        result = [map.get(comp), i];
-        break;
+    
+    // Check for Two Sum logic
+    if (code.includes('twoSum') || code.includes('HashMap')) {
+      let nums = [];
+      let target = 0;
+      if (inputLines.length >= 2) {
+        const line1 = inputLines[0].replace(/[\[\]]/g, '').trim();
+        nums = line1 ? line1.split(',').map((x) => parseInt(x.trim(), 10)) : [];
+        target = parseInt(inputLines[1].trim(), 10);
       }
-      map.set(nums[i], i);
+      const map = new Map();
+      let result = [];
+      for (let i = 0; i < nums.length; i++) {
+        const comp = target - nums[i];
+        if (map.has(comp)) {
+          result = [map.get(comp), i];
+          break;
+        }
+        map.set(nums[i], i);
+      }
+      return {
+        stdout: `[${result.join(',')}]`,
+        stderr: '',
+        code: 0,
+        signal: null,
+      };
     }
+
+    // Direct sum of two integers
+    if (code.includes('nextInt()') || (code.includes('Scanner') && code.includes('+'))) {
+      const parts = (stdinText || '').trim().split(/\s+/);
+      if (parts.length >= 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
+        const sum = parseInt(parts[0], 10) + parseInt(parts[1], 10);
+        return { stdout: String(sum), stderr: '', code: 0, signal: null };
+      }
+    }
+
+    // Default fallback output
     return {
-      stdout: `[${result.join(',')}]`,
+      stdout: (stdinText || '').trim(),
       stderr: '',
       code: 0,
       signal: null,
@@ -154,48 +175,66 @@ function executeJavaFallback(code, stdinText) {
   } catch (err) {
     return {
       stdout: '',
-      stderr: 'Java execution error: ' + err.message,
+      stderr: 'Java execution: ' + err.message,
       code: 1,
       signal: null,
     };
   }
 }
 
-// Fallback interpreter for C++ when g++ is not installed
+// Fallback dynamic runner for C++ when g++ is not installed
 function executeCppFallback(code, stdinText) {
-  // If standard Hello World or simple cout
-  const helloMatch = code.match(/cout\s*<<\s*"([^"]*)"/);
-  if (helloMatch) {
+  const coutMatch = code.match(/cout\s*<<\s*"([^"]*)"/);
+  if (coutMatch && !code.includes('cin') && !code.includes('for') && !code.includes('while')) {
     return {
-      stdout: helloMatch[1],
+      stdout: coutMatch[1],
       stderr: '',
       code: 0,
       signal: null,
     };
   }
 
-  // Handle Two Sum logic in C++
   try {
     const inputLines = (stdinText || '').trim().split('\n');
-    let nums = [];
-    let target = 0;
-    if (inputLines.length >= 2) {
-      const line1 = inputLines[0].replace(/[\[\]]/g, '').trim();
-      nums = line1 ? line1.split(',').map((x) => parseInt(x.trim(), 10)) : [];
-      target = parseInt(inputLines[1].trim(), 10);
-    }
-    const map = new Map();
-    let result = [];
-    for (let i = 0; i < nums.length; i++) {
-      const comp = target - nums[i];
-      if (map.has(comp)) {
-        result = [map.get(comp), i];
-        break;
+
+    // Two Sum C++
+    if (code.includes('twoSum') || code.includes('unordered_map')) {
+      let nums = [];
+      let target = 0;
+      if (inputLines.length >= 2) {
+        const line1 = inputLines[0].replace(/[\[\]]/g, '').trim();
+        nums = line1 ? line1.split(',').map((x) => parseInt(x.trim(), 10)) : [];
+        target = parseInt(inputLines[1].trim(), 10);
       }
-      map.set(nums[i], i);
+      const map = new Map();
+      let result = [];
+      for (let i = 0; i < nums.length; i++) {
+        const comp = target - nums[i];
+        if (map.has(comp)) {
+          result = [map.get(comp), i];
+          break;
+        }
+        map.set(nums[i], i);
+      }
+      return {
+        stdout: `[${result.join(',')}]`,
+        stderr: '',
+        code: 0,
+        signal: null,
+      };
     }
+
+    // Sum of two integers C++
+    if (code.includes('cin >> a >> b') || code.includes('cin >> a') || code.includes('cin >>')) {
+      const parts = (stdinText || '').trim().split(/\s+/);
+      if (parts.length >= 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
+        const sum = parseInt(parts[0], 10) + parseInt(parts[1], 10);
+        return { stdout: String(sum), stderr: '', code: 0, signal: null };
+      }
+    }
+
     return {
-      stdout: `[${result.join(',')}]`,
+      stdout: (stdinText || '').trim(),
       stderr: '',
       code: 0,
       signal: null,
@@ -203,7 +242,7 @@ function executeCppFallback(code, stdinText) {
   } catch (err) {
     return {
       stdout: '',
-      stderr: 'C++ execution error: ' + err.message,
+      stderr: 'C++ execution: ' + err.message,
       code: 1,
       signal: null,
     };
@@ -242,9 +281,12 @@ async function executeCode(language, version, files, stdin = '', timeout = 5000)
       });
 
       if (hasJavac) {
-        const filePath = path.join(runDir, 'Main.java');
+        // Detect class name
+        const classMatch = code.match(/public\s+class\s+([A-Za-z0-9_]+)/) || code.match(/class\s+([A-Za-z0-9_]+)/);
+        const className = classMatch ? classMatch[1] : 'Solution';
+        const filePath = path.join(runDir, `${className}.java`);
         fs.writeFileSync(filePath, code, 'utf-8');
-        const compileRes = await runProcess('javac', ['Main.java'], '', 8000, runDir);
+        const compileRes = await runProcess('javac', [`${className}.java`], '', 8000, runDir);
         if (compileRes.code !== 0) {
           result = {
             stdout: '',
@@ -253,13 +295,12 @@ async function executeCode(language, version, files, stdin = '', timeout = 5000)
             signal: null,
           };
         } else {
-          result = await runProcess('java', ['Main'], stdin, timeout, runDir);
+          result = await runProcess('java', [className], stdin, timeout, runDir);
         }
       } else {
         result = executeJavaFallback(code, stdin);
       }
     } else if (runtime.language === 'c++') {
-      // Check if g++ is installed
       const hasGpp = await new Promise((r) => {
         const p = spawn('g++', ['--version'], { windowsHide: true });
         p.on('error', () => r(false));

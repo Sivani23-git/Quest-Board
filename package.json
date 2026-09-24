@@ -1,0 +1,13 @@
+{
+  "name": "questboard-root",
+  "version": "1.0.0",
+  "description": "QuestBoard — Gamified Productivity & Learning Platform",
+  "private": true,
+  "scripts": {
+    "dev:server": "cd server && npm run dev",
+    "dev:client": "cd client && npm run dev",
+    "piston": "npm --prefix server run piston",
+    "test:server": "cd server && npm test",
+    "build:client": "cd client && npm run build"
+  }
+}

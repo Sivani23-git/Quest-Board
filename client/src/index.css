@@ -1,0 +1,97 @@
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --bg-main: #0A0F1E;
+    --bg-surface: #111827;
+    --bg-card: #1A2236;
+    --border-main: #1E2D45;
+    --text-primary: #E8ECF4;
+    --text-secondary: #94A3B8;
+    --primary: #6C63FF;
+    --accent: #00D4FF;
+  }
+
+  body {
+    background-color: #0A0F1E;
+    color: #E8ECF4;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+    margin: 0;
+  }
+
+  /* Custom Modern Scrollbars */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #0A0F1E;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #1E2D45;
+    border-radius: 9999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #6C63FF;
+  }
+}
+
+@layer components {
+  /* Glassmorphic & Cyber Card Styles */
+  .quest-card {
+    @apply bg-bg-card border border-bg-border rounded-xl p-5 transition-all duration-200 hover:border-brand-primary hover:shadow-[0_4px_20px_rgba(108,99,255,0.15)] hover:-translate-y-0.5;
+  }
+
+  .quest-card-active {
+    @apply bg-bg-card border-brand-primary rounded-xl p-5 shadow-[0_0_15px_rgba(108,99,255,0.25)];
+  }
+
+  .glass-panel {
+    @apply bg-bg-surface/80 backdrop-blur-md border border-bg-border/60 rounded-xl;
+  }
+
+  /* Interactive Button System */
+  .btn-primary {
+    @apply bg-brand-primary hover:bg-brand-hover text-white font-medium px-4 py-2 rounded-lg transition-all duration-150 active:scale-95 shadow-md shadow-brand-primary/20 flex items-center justify-center gap-2;
+  }
+
+  .btn-secondary {
+    @apply bg-bg-card hover:bg-bg-hover text-text-primary border border-bg-border font-medium px-4 py-2 rounded-lg transition-all duration-150 active:scale-95 flex items-center justify-center gap-2;
+  }
+
+  .btn-accent {
+    @apply bg-brand-accent hover:opacity-90 text-bg-main font-semibold px-4 py-2 rounded-lg transition-all duration-150 active:scale-95 flex items-center justify-center gap-2;
+  }
+
+  .btn-ghost {
+    @apply bg-transparent hover:bg-bg-card text-text-secondary hover:text-text-primary font-medium px-3 py-1.5 rounded-lg transition-all duration-150 flex items-center justify-center gap-1.5;
+  }
+
+  /* Badge Styles */
+  .badge-easy {
+    @apply bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-xs px-2.5 py-0.5 rounded-full font-medium inline-flex items-center gap-1;
+  }
+  .badge-medium {
+    @apply bg-amber-500/10 text-amber-400 border border-amber-500/30 text-xs px-2.5 py-0.5 rounded-full font-medium inline-flex items-center gap-1;
+  }
+  .badge-hard {
+    @apply bg-orange-500/10 text-orange-400 border border-orange-500/30 text-xs px-2.5 py-0.5 rounded-full font-medium inline-flex items-center gap-1;
+  }
+  .badge-epic {
+    @apply bg-purple-500/10 text-purple-300 border border-purple-500/30 text-xs px-2.5 py-0.5 rounded-full font-medium inline-flex items-center gap-1;
+  }
+  .badge-legendary {
+    @apply bg-red-500/15 text-red-400 border border-red-500/40 text-xs px-2.5 py-0.5 rounded-full font-semibold inline-flex items-center gap-1 shadow-[0_0_10px_rgba(239,68,68,0.2)];
+  }
+
+  /* XP and Progress Bars */
+  .xp-bar-fill {
+    @apply bg-gradient-to-r from-brand-primary via-indigo-500 to-brand-accent h-full rounded-full transition-all duration-500 shadow-[0_0_12px_rgba(0,212,255,0.4)];
+  }
+}

@@ -13,7 +13,7 @@ import {
 import { BarChart3, TrendingUp, Calendar, Zap, PieChart as PieIcon } from 'lucide-react';
 import api from '../../services/api';
 
-const COLORS = ['#6C63FF', '#00D4FF', '#22D3A0', '#F59E0B', '#EF4444', '#8B5CF6'];
+const COLORS = ['#3B82F6', '#14B8A6', '#10B981', '#F59E0B', '#F97316', '#8B5CF6'];
 
 export function AnalyticsPage() {
   const [xpHistory, setXpHistory] = useState([]);
@@ -45,7 +45,7 @@ export function AnalyticsPage() {
   if (loading) {
     return (
       <div className="py-20 text-center">
-        <div className="w-8 h-8 border-4 border-brand-primary border-t-transparent rounded-full animate-spin mx-auto" />
+        <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto" />
       </div>
     );
   }
@@ -53,20 +53,20 @@ export function AnalyticsPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl sm:text-3xl font-black text-white flex items-center gap-2.5">
-          <BarChart3 className="w-7 h-7 text-brand-accent" />
+        <h1 className="text-2xl sm:text-3xl font-black text-slate-900 flex items-center gap-2.5">
+          <BarChart3 className="w-7 h-7 text-blue-600" />
           <span>Real-Time Analytics & Trends</span>
         </h1>
-        <p className="text-xs sm:text-sm text-text-secondary mt-1">
+        <p className="text-xs sm:text-sm text-slate-500 mt-1">
           Review your progression timeline, domain breakdowns, and productivity consistency metrics.
         </p>
       </div>
 
       {/* Main Chart: XP Growth Over Time */}
-      <div className="p-6 rounded-2xl bg-bg-card border border-bg-border space-y-4">
+      <div className="p-6 rounded-2xl bg-white border border-slate-200/80 shadow-sm space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-base font-bold text-white flex items-center gap-2">
-            <TrendingUp className="w-4 h-4 text-brand-accent" />
+          <h2 className="text-base font-bold text-slate-900 flex items-center gap-2">
+            <TrendingUp className="w-4 h-4 text-blue-600" />
             <span>XP Accumulated (Last 30 Days)</span>
           </h2>
         </div>
@@ -76,26 +76,27 @@ export function AnalyticsPage() {
             <AreaChart data={xpHistory}>
               <defs>
                 <linearGradient id="xpGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#6C63FF" stopOpacity={0.6} />
-                  <stop offset="95%" stopColor="#00D4FF" stopOpacity={0.0} />
+                  <stop offset="5%" stopColor="#3B82F6" stopOpacity={0.3} />
+                  <stop offset="95%" stopColor="#38BDF8" stopOpacity={0.0} />
                 </linearGradient>
               </defs>
-              <XAxis dataKey="date" stroke="#64748B" fontSize={11} />
-              <YAxis stroke="#64748B" fontSize={11} />
+              <XAxis dataKey="date" stroke="#94A3B8" fontSize={11} />
+              <YAxis stroke="#94A3B8" fontSize={11} />
               <Tooltip
                 contentStyle={{
-                  backgroundColor: '#111827',
-                  borderColor: '#1E2D45',
+                  backgroundColor: '#FFFFFF',
+                  borderColor: '#E2E8F0',
                   borderRadius: '12px',
-                  color: '#fff',
+                  color: '#0F172A',
                   fontSize: '12px',
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
                 }}
               />
               <Area
                 type="monotone"
                 dataKey="xp"
-                stroke="#00D4FF"
-                strokeWidth={2}
+                stroke="#3B82F6"
+                strokeWidth={2.5}
                 fillOpacity={1}
                 fill="url(#xpGradient)"
               />
@@ -107,15 +108,15 @@ export function AnalyticsPage() {
       {/* Secondary Charts: Category & Difficulty Distribution */}
       <div className="grid md:grid-cols-2 gap-6">
         {/* Category Breakdown */}
-        <div className="p-6 rounded-2xl bg-bg-card border border-bg-border space-y-4">
-          <h2 className="text-base font-bold text-white flex items-center gap-2">
-            <PieIcon className="w-4 h-4 text-emerald-400" />
+        <div className="p-6 rounded-2xl bg-white border border-slate-200/80 shadow-sm space-y-4">
+          <h2 className="text-base font-bold text-slate-900 flex items-center gap-2">
+            <PieIcon className="w-4 h-4 text-emerald-600" />
             <span>Quests by Domain</span>
           </h2>
 
           <div className="h-64 flex items-center justify-center">
             {categoryStats.byCategory.length === 0 ? (
-              <p className="text-xs text-text-muted">Complete quests to populate category metrics.</p>
+              <p className="text-xs text-slate-400">Complete quests to populate category metrics.</p>
             ) : (
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
@@ -134,11 +135,12 @@ export function AnalyticsPage() {
                   </Pie>
                   <Tooltip
                     contentStyle={{
-                      backgroundColor: '#111827',
-                      borderColor: '#1E2D45',
+                      backgroundColor: '#FFFFFF',
+                      borderColor: '#E2E8F0',
                       borderRadius: '12px',
-                      color: '#fff',
+                      color: '#0F172A',
                       fontSize: '12px',
+                      boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
                     }}
                   />
                 </PieChart>
@@ -148,15 +150,15 @@ export function AnalyticsPage() {
         </div>
 
         {/* Difficulty Breakdown */}
-        <div className="p-6 rounded-2xl bg-bg-card border border-bg-border space-y-4">
-          <h2 className="text-base font-bold text-white flex items-center gap-2">
-            <Zap className="w-4 h-4 text-amber-400" />
+        <div className="p-6 rounded-2xl bg-white border border-slate-200/80 shadow-sm space-y-4">
+          <h2 className="text-base font-bold text-slate-900 flex items-center gap-2">
+            <Zap className="w-4 h-4 text-amber-500" />
             <span>Completed Difficulty Tiers</span>
           </h2>
 
           <div className="h-64 flex items-center justify-center">
             {categoryStats.byDifficulty.length === 0 ? (
-              <p className="text-xs text-text-muted">
+              <p className="text-xs text-slate-400">
                 Complete quests to populate difficulty metrics.
               </p>
             ) : (
@@ -178,11 +180,12 @@ export function AnalyticsPage() {
                   </Pie>
                   <Tooltip
                     contentStyle={{
-                      backgroundColor: '#111827',
-                      borderColor: '#1E2D45',
+                      backgroundColor: '#FFFFFF',
+                      borderColor: '#E2E8F0',
                       borderRadius: '12px',
-                      color: '#fff',
+                      color: '#0F172A',
                       fontSize: '12px',
+                      boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
                     }}
                   />
                 </PieChart>

@@ -124,6 +124,10 @@ describe('🚀 QuestBoard Language Learning Paths & Coding Academy', () => {
     expect(submitRes.body.data.isAllPassed).toBe(true);
     expect(submitRes.body.data.isFirstSolve).toBe(true);
     expect(submitRes.body.data.xpEarned).toBe(pyChallenge.xpReward);
+    expect(submitRes.body.data.totalXP).toBe(pyChallenge.xpReward);
+    expect(submitRes.body.data.xpProgress).toBeDefined();
+    expect(submitRes.body.data.xpProgress.totalXP).toBe(pyChallenge.xpReward);
+    expect(submitRes.body.data.coinBalance).toBe(50 + pyChallenge.coinReward);
   });
 
   it('5. Should prevent duplicate XP awards on duplicate submission', async () => {
@@ -141,6 +145,7 @@ describe('🚀 QuestBoard Language Learning Paths & Coding Academy', () => {
     expect(submitRes.body.data.isAllPassed).toBe(true);
     expect(submitRes.body.data.isFirstSolve).toBe(false);
     expect(submitRes.body.data.xpEarned).toBe(0);
+    expect(submitRes.body.data.totalXP).toBeUndefined();
   });
 
   it('6. Should allow solving JavaScript challenge on an independent learning path', async () => {

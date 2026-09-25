@@ -1,6 +1,7 @@
 import { User } from '../models/User.js';
 import { format, subDays } from 'date-fns';
 import { XPService } from './XPService.js';
+import { AchievementService } from './AchievementService.js';
 import { STREAK_BONUS_XP } from '../config/constants.js';
 
 export class StreakService {

@@ -31,6 +31,16 @@ const quizSchema = new mongoose.Schema(
       type: String,
       default: '',
     },
+    category: {
+      type: String,
+      default: 'General Programming',
+      index: true,
+    },
+    difficulty: {
+      type: String,
+      enum: ['beginner', 'intermediate', 'advanced', 'easy', 'medium', 'hard'],
+      default: 'intermediate',
+    },
     skillId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Skill',
@@ -47,9 +57,17 @@ const quizSchema = new mongoose.Schema(
       type: Number, // In seconds (optional)
       default: null,
     },
+    xpReward: {
+      type: Number,
+      default: 100,
+    },
+    coinReward: {
+      type: Number,
+      default: 25,
+    },
     maxAttempts: {
       type: Number,
-      default: 3,
+      default: 10,
     },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,

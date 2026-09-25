@@ -13,8 +13,25 @@ const challengeSchema = new mongoose.Schema(
     },
     type: {
       type: String,
-      enum: ['quest_count', 'xp_target', 'coding_count', 'streak'],
+      enum: [
+        'quest_count',
+        'xp_target',
+        'xp_total',
+        'coding_count',
+        'streak',
+        'quiz_count',
+        'quest_categories',
+        'category_count',
+      ],
       required: true,
+    },
+    category: {
+      type: String,
+      default: 'Quests',
+    },
+    badgeName: {
+      type: String,
+      default: 'Champion',
     },
     requirement: {
       target: { type: Number, required: true },

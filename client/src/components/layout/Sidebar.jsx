@@ -7,7 +7,6 @@ import {
   Network,
   Code2,
   HelpCircle,
-  Gift,
   Trophy,
   Zap,
   BarChart3,
@@ -15,17 +14,16 @@ import {
 } from 'lucide-react';
 
 const NAV_ITEMS = [
-  { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
-  { name: 'Quests', path: '/quests', icon: Sword },
-  { name: 'Goals & Questlines', path: '/goals', icon: Target },
-  { name: 'Skill Tree', path: '/skills', icon: Network },
-  { name: 'Coding Academy', path: '/coding', icon: Code2 },
-  { name: 'Knowledge Quizzes', path: '/quizzes', icon: HelpCircle },
-  { name: 'Reward Shop', path: '/rewards', icon: Gift },
-  { name: 'Achievements', path: '/achievements', icon: Trophy },
-  { name: 'Challenges', path: '/challenges', icon: Zap },
-  { name: 'Analytics', path: '/analytics', icon: BarChart3 },
-  { name: 'Leaderboard', path: '/leaderboard', icon: Award },
+  { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard, iconColor: 'text-blue-500' },
+  { name: 'Quests', path: '/quests', icon: Sword, iconColor: 'text-indigo-500' },
+  { name: 'Goals & Questlines', path: '/goals', icon: Target, iconColor: 'text-emerald-500' },
+  { name: 'Skill Tree', path: '/skills', icon: Network, iconColor: 'text-teal-500' },
+  { name: 'Coding Academy', path: '/coding', icon: Code2, iconColor: 'text-cyan-500' },
+  { name: 'Knowledge Quizzes', path: '/quizzes', icon: HelpCircle, iconColor: 'text-violet-500' },
+  { name: 'Achievements', path: '/achievements', icon: Trophy, iconColor: 'text-amber-500' },
+  { name: 'Challenges', path: '/challenges', icon: Zap, iconColor: 'text-orange-500' },
+  { name: 'Analytics', path: '/analytics', icon: BarChart3, iconColor: 'text-sky-500' },
+  { name: 'Leaderboard', path: '/leaderboard', icon: Award, iconColor: 'text-purple-500' },
 ];
 
 export function Sidebar({ isOpen, onClose }) {
@@ -35,25 +33,25 @@ export function Sidebar({ isOpen, onClose }) {
       {isOpen && (
         <div
           onClick={onClose}
-          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 lg:hidden"
+          className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-40 lg:hidden"
         />
       )}
 
       <aside
-        className={`fixed top-0 bottom-0 left-0 z-40 w-64 bg-bg-surface/95 lg:bg-bg-surface/60 backdrop-blur-xl border-r border-bg-border/80 p-4 transition-transform duration-300 ease-in-out lg:translate-x-0 ${
+        className={`fixed top-0 bottom-0 left-0 z-40 w-64 bg-white border-r border-slate-200/90 p-4 transition-transform duration-300 ease-in-out lg:translate-x-0 ${
           isOpen ? 'translate-x-0' : '-translate-x-full'
-        } flex flex-col justify-between`}
+        } flex flex-col justify-between shadow-sm`}
       >
         <div className="space-y-6">
           {/* Mobile Top Brand Header in Sidebar */}
-          <div className="lg:hidden flex items-center justify-between pb-4 border-b border-bg-border">
+          <div className="lg:hidden flex items-center justify-between pb-4 border-b border-slate-100">
             <div className="flex items-center gap-2">
               <span className="text-xl">⚔️</span>
-              <span className="font-bold text-lg text-white">QuestBoard</span>
+              <span className="font-bold text-lg text-slate-900">QuestBoard</span>
             </div>
           </div>
 
-          <div className="text-[11px] font-bold text-text-muted uppercase tracking-wider px-3">
+          <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider px-3">
             Navigation
           </div>
 
@@ -66,15 +64,23 @@ export function Sidebar({ isOpen, onClose }) {
                   to={item.path}
                   onClick={onClose}
                   className={({ isActive }) =>
-                    `flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition-all duration-150 ${
+                    `flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all duration-150 ${
                       isActive
-                        ? 'bg-brand-primary/20 text-brand-accent border border-brand-primary/40 shadow-sm shadow-brand-primary/20'
-                        : 'text-text-secondary hover:text-text-primary hover:bg-bg-card'
+                        ? 'bg-blue-50 text-blue-600 border border-blue-200 shadow-sm'
+                        : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
                     }`
                   }
                 >
-                  <Icon className="w-4 h-4 shrink-0" />
-                  <span>{item.name}</span>
+                  {({ isActive }) => (
+                    <>
+                      <Icon
+                        className={`w-4 h-4 shrink-0 transition-colors ${
+                          isActive ? 'text-blue-600' : item.iconColor
+                        }`}
+                      />
+                      <span>{item.name}</span>
+                    </>
+                  )}
                 </NavLink>
               );
             })}
@@ -82,13 +88,13 @@ export function Sidebar({ isOpen, onClose }) {
         </div>
 
         {/* Sidebar Footer Hint */}
-        <div className="p-3 rounded-xl bg-bg-card/70 border border-bg-border text-xs text-text-muted">
-          <div className="flex items-center gap-1.5 text-brand-accent font-semibold mb-1">
-            <Zap className="w-3.5 h-3.5" />
+        <div className="p-3.5 rounded-2xl bg-gradient-to-br from-blue-50 to-sky-50 border border-blue-100 text-xs text-slate-600">
+          <div className="flex items-center gap-1.5 text-blue-600 font-bold mb-1">
+            <Zap className="w-3.5 h-3.5 text-amber-500 fill-amber-400" />
             <span>Daily Pro-tip</span>
           </div>
-          <p className="text-[11px] leading-relaxed">
-            Verify at least 1 quest every 24 hours to keep your active streak blazing.
+          <p className="text-[11px] leading-relaxed text-slate-500">
+            Complete at least 1 quest every 24 hours to keep your active streak blazing.
           </p>
         </div>
       </aside>

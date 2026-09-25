@@ -7,6 +7,9 @@ import { Quiz } from '../models/Quiz.js';
 import { CodingChallenge } from '../models/CodingChallenge.js';
 import { Challenge } from '../models/Challenge.js';
 import { seedCodingChallenges } from './seedCodingChallenges.js';
+import { seedQuizzes } from './seedQuizzes.js';
+import { seedAchievements } from './seedAchievements.js';
+import { seedChallenges } from './seedChallenges.js';
 
 export async function seedDatabase() {
   try {
@@ -85,41 +88,8 @@ export async function seedDatabase() {
     }
 
     // 2. Seed Quizzes
-    let arrayQuiz;
-    const quizCount = await Quiz.countDocuments();
-    if (quizCount === 0) {
-      arrayQuiz = await Quiz.create({
-        title: 'JavaScript Array Methods Mastery',
-        description: 'Test your understanding of map, filter, reduce, and immutability.',
-        skillId: webDevSkill?._id || null,
-        passingScore: 70,
-        timeLimit: 300,
-        createdBy: adminUser._id,
-        questions: [
-          {
-            text: 'Which array method returns a brand new array with transformed elements without mutating the original?',
-            options: ['forEach()', 'map()', 'push()', 'splice()'],
-            correctIndex: 1,
-            explanation: 'map() creates a new array populated with the results of calling a provided function on every element in the calling array.',
-          },
-          {
-            text: 'What is the return value of [1, 2, 3, 4].filter(x => x % 2 === 0)?',
-            options: ['[1, 3]', '[2, 4]', '[true, false]', '4'],
-            correctIndex: 1,
-            explanation: 'filter() creates a shallow copy of a portion of a given array, filtered down to just the elements from the given array that pass the test.',
-          },
-          {
-            text: 'What will [1, 2, 3].reduce((acc, curr) => acc + curr, 10) evaluate to?',
-            options: ['6', '16', '10', 'undefined'],
-            correctIndex: 1,
-            explanation: 'With an initial accumulator of 10, adding 1 + 2 + 3 gives 16.',
-          },
-        ],
-      });
-      console.log('[Seed] Default Quizzes created.');
-    } else {
-      arrayQuiz = await Quiz.findOne();
-    }
+    await seedQuizzes(adminUser._id);
+    const arrayQuiz = await Quiz.findOne({ title: 'JavaScript Array Methods Mastery' }) || await Quiz.findOne();
 
     // 3. Seed Coding Challenges for All Supported Language Learning Paths
     await seedCodingChallenges(adminUser._id);
@@ -192,78 +162,10 @@ export async function seedDatabase() {
     }
 
     // 5. Seed Achievements
-    const achCount = await Achievement.countDocuments();
-    if (achCount === 0) {
-      await Achievement.create([
-        {
-          name: 'First Steps',
-          description: 'Complete your first quest in the realm of QuestBoard.',
-          icon: 'footprints',
-          rarity: 'common',
-          xpReward: 50,
-          coinReward: 15,
-          requirements: { type: 'quest_count', threshold: 1 },
-        },
-        {
-          name: 'Consistent Adept',
-          description: 'Maintain a 3-day active streak.',
-          icon: 'flame',
-          rarity: 'rare',
-          xpReward: 150,
-          coinReward: 35,
-          requirements: { type: 'streak', threshold: 3 },
-        },
-        {
-          name: 'Warrior of Productivity',
-          description: 'Complete 10 verified quests.',
-          icon: 'shield',
-          rarity: 'epic',
-          xpReward: 300,
-          coinReward: 75,
-          requirements: { type: 'quest_count', threshold: 10 },
-        },
-        {
-          name: 'Code Slayer',
-          description: 'Solve 5 programming sandbox challenges.',
-          icon: 'terminal',
-          rarity: 'epic',
-          xpReward: 350,
-          coinReward: 80,
-          requirements: { type: 'coding_count', threshold: 5 },
-        },
-        {
-          name: 'Legendary Master',
-          description: 'Ascend to Level 5 and beyond.',
-          icon: 'crown',
-          rarity: 'legendary',
-          xpReward: 500,
-          coinReward: 150,
-          requirements: { type: 'level', threshold: 5 },
-        },
-      ]);
-      console.log('[Seed] Default Achievements created.');
-    }
+    await seedAchievements();
 
     // 6. Seed Challenges
-    const chalCount = await Challenge.countDocuments();
-    if (chalCount === 0) {
-      const now = new Date();
-      const nextWeek = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
-
-      await Challenge.create({
-        title: 'Weekly Quest Sprint',
-        description: 'Complete 5 verified quests before the weekly reset to earn the Champion badge.',
-        type: 'quest_count',
-        requirement: { target: 5 },
-        xpReward: 300,
-        coinReward: 75,
-        startDate: now,
-        endDate: nextWeek,
-        isOfficial: true,
-        createdBy: adminUser._id,
-      });
-      console.log('[Seed] Weekly Community Challenge created.');
-    }
+    await seedChallenges();
   } catch (error) {
     console.error('[Seed Error]:', error.message);
   }

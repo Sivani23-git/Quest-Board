@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import { Sword, Mail, Lock, ArrowRight, AlertCircle, Sparkles } from 'lucide-react';
+import { Mail, Lock, AlertCircle } from 'lucide-react';
+import { AnimatedTopDock } from '../../shaders/animated-top-dock/AnimatedTopDock';
+import '../../shaders/threeui.css';
 
 export function LoginPage() {
   const [email, setEmail] = useState('');
@@ -26,34 +28,50 @@ export function LoginPage() {
     }
   };
 
-  const fillDemoCredentials = (demoEmail, demoPassword) => {
-    setEmail(demoEmail);
-    setPassword(demoPassword);
-  };
-
   return (
-    <div className="min-h-screen bg-bg-main text-text-primary flex items-center justify-center p-4 relative overflow-hidden">
-      {/* Background glow orb */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-brand-primary/20 rounded-full blur-3xl pointer-events-none" />
+    <div className="relative min-h-screen text-text-primary flex items-center justify-center p-4 overflow-hidden selection:bg-brand-primary selection:text-white">
+      {/* 1. AnimatedTopDock Pixel Terminal Background */}
+      <div className="auth-terminal-bg fixed inset-0 z-0 pointer-events-none overflow-hidden [filter:hue-rotate(270deg)_saturate(1.15)_brightness(0.85)] [&_.atd-retro\_\_readout]:!hidden [&_.animated-top-dock-component\_\_caption]:!hidden [&_.atd-retro\_\_bar]:!opacity-40 [&_.atd-retro\_\_bar]:!pointer-events-none [&_.atd-retro\_\_bar]:![filter:brightness(0.82)_contrast(0.9)] [&_.atd-retro\_\_bar]:!border-[#6C63FF]/30">
+        <AnimatedTopDock
+          variant="retro"
+          pixelSize={4}
+          levels={7}
+          noise={1.00}
+          scanlines={0.32}
+          speed={1.00}
+          proximity={132}
+          widthGrowth={54}
+        />
+      </div>
 
-      <div className="w-full max-w-md p-6 sm:p-8 bg-bg-card border border-bg-border rounded-2xl shadow-2xl relative z-10 animate-fade-in">
+      {/* 2. QuestBoard Atmosphere Overlay */}
+      <div
+        className="fixed inset-0 z-[1] pointer-events-none"
+        style={{
+          background:
+            'radial-gradient(ellipse 90% 75% at 50% 45%, rgba(248, 250, 252, 0.45) 0%, rgba(241, 245, 249, 0.85) 100%)',
+        }}
+      />
+
+      {/* 3. Auth Form Card */}
+      <div className="w-full max-w-md p-6 sm:p-8 bg-white/95 backdrop-blur-xl border border-slate-200/80 rounded-2xl shadow-xl relative z-10 animate-fade-in">
         <div className="text-center mb-8">
           <Link to="/" className="inline-flex items-center gap-2 mb-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-primary to-brand-accent flex items-center justify-center text-white font-bold text-xl shadow-md">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white font-bold text-xl shadow-md shadow-blue-500/20">
               ⚔️
             </div>
-            <span className="font-extrabold text-2xl tracking-tight text-white">
-              Quest<span className="text-brand-accent">Board</span>
+            <span className="font-extrabold text-2xl tracking-tight text-slate-900">
+              Quest<span className="text-blue-600">Board</span>
             </span>
           </Link>
-          <h1 className="text-2xl font-bold text-white">Welcome Back</h1>
-          <p className="text-xs text-text-secondary mt-1">
+          <h1 className="text-2xl font-bold text-slate-900">Welcome Back</h1>
+          <p className="text-xs text-slate-500 mt-1">
             Enter your credentials to resume your journey.
           </p>
         </div>
 
         {error && (
-          <div className="flex items-center gap-2.5 p-3.5 mb-6 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs font-medium">
+          <div className="flex items-center gap-2.5 p-3.5 mb-6 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs font-medium">
             <AlertCircle className="w-4 h-4 shrink-0" />
             <span>{error}</span>
           </div>
@@ -61,35 +79,35 @@ export function LoginPage() {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-xs font-semibold text-text-secondary uppercase mb-1.5">
+            <label className="block text-xs font-semibold text-slate-700 uppercase mb-1.5">
               Email Address
             </label>
             <div className="relative">
-              <Mail className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-text-muted" />
+              <Mail className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
               <input
                 type="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="adventurer@questboard.io"
-                className="w-full bg-bg-surface border border-bg-border rounded-xl pl-10 pr-4 py-2.5 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand-primary focus:ring-1 focus:ring-brand-primary transition-all"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-text-secondary uppercase mb-1.5">
+            <label className="block text-xs font-semibold text-slate-700 uppercase mb-1.5">
               Password
             </label>
             <div className="relative">
-              <Lock className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-text-muted" />
+              <Lock className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
               <input
                 type="password"
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••••••"
-                className="w-full bg-bg-surface border border-bg-border rounded-xl pl-10 pr-4 py-2.5 text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand-primary focus:ring-1 focus:ring-brand-primary transition-all"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all"
               />
             </div>
           </div>
@@ -97,38 +115,15 @@ export function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full btn-primary py-3 text-sm font-semibold mt-2"
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-xl shadow-md hover:shadow-lg transition-all text-sm mt-2 disabled:opacity-50"
           >
             {loading ? 'Authenticating...' : 'Sign In to QuestBoard'}
           </button>
         </form>
 
-        {/* Demo Accounts Quick-Fill Helper */}
-        <div className="mt-6 pt-6 border-t border-bg-border">
-          <div className="text-[11px] font-bold text-text-muted uppercase tracking-wider text-center mb-3">
-            Quick Demo Access
-          </div>
-          <div className="grid grid-cols-2 gap-2">
-            <button
-              type="button"
-              onClick={() => fillDemoCredentials('hero@questboard.io', 'Password123!')}
-              className="p-2 rounded-xl bg-bg-surface hover:bg-bg-hover border border-bg-border text-xs text-brand-accent font-medium text-center transition-colors"
-            >
-              Hero Account
-            </button>
-            <button
-              type="button"
-              onClick={() => fillDemoCredentials('admin@questboard.io', 'AdminPass123!')}
-              className="p-2 rounded-xl bg-bg-surface hover:bg-bg-hover border border-bg-border text-xs text-purple-400 font-medium text-center transition-colors"
-            >
-              Admin Master
-            </button>
-          </div>
-        </div>
-
-        <div className="text-center mt-6 text-xs text-text-secondary">
+        <div className="text-center mt-6 text-xs text-slate-500">
           New to the realm?{' '}
-          <Link to="/register" className="text-brand-accent font-semibold hover:underline">
+          <Link to="/register" className="text-blue-600 hover:text-blue-700 font-semibold hover:underline">
             Create an Account
           </Link>
         </div>

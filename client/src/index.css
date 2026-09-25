@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,92 +6,138 @@
 
 @layer base {
   :root {
-    --bg-main: #0A0F1E;
-    --bg-surface: #111827;
-    --bg-card: #1A2236;
-    --border-main: #1E2D45;
-    --text-primary: #E8ECF4;
-    --text-secondary: #94A3B8;
-    --primary: #6C63FF;
-    --accent: #00D4FF;
+    --bg-main: #F8FAFC;
+    --bg-surface: #FFFFFF;
+    --bg-card: #FFFFFF;
+    --border-main: #E2E8F0;
+    --text-primary: #0F172A;
+    --text-secondary: #475569;
+    --primary: #3B82F6;
+    --accent: #38BDF8;
   }
 
   body {
-    background-color: #0A0F1E;
-    color: #E8ECF4;
+    background-color: #F8FAFC;
+    color: #0F172A;
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
     min-height: 100vh;
     overflow-x: hidden;
     margin: 0;
   }
 
-  /* Custom Modern Scrollbars */
+  /* Custom Clean Scrollbars */
   ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
   }
   ::-webkit-scrollbar-track {
-    background: #0A0F1E;
+    background: #F1F5F9;
   }
   ::-webkit-scrollbar-thumb {
-    background: #1E2D45;
+    background: #CBD5E1;
     border-radius: 9999px;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: #6C63FF;
+    background: #94A3B8;
   }
 }
 
 @layer components {
-  /* Glassmorphic & Cyber Card Styles */
+  /* Clean RPG Card Styles */
   .quest-card {
-    @apply bg-bg-card border border-bg-border rounded-xl p-5 transition-all duration-200 hover:border-brand-primary hover:shadow-[0_4px_20px_rgba(108,99,255,0.15)] hover:-translate-y-0.5;
+    @apply bg-white border border-slate-200/90 rounded-2xl p-5 transition-all duration-200 shadow-sm hover:shadow-md hover:border-blue-300 hover:-translate-y-0.5;
   }
 
   .quest-card-active {
-    @apply bg-bg-card border-brand-primary rounded-xl p-5 shadow-[0_0_15px_rgba(108,99,255,0.25)];
+    @apply bg-white border-blue-500 rounded-2xl p-5 shadow-md shadow-blue-500/10 ring-2 ring-blue-500/20;
   }
 
   .glass-panel {
-    @apply bg-bg-surface/80 backdrop-blur-md border border-bg-border/60 rounded-xl;
+    @apply bg-white/95 backdrop-blur-md border border-slate-200/90 rounded-2xl shadow-sm;
   }
 
   /* Interactive Button System */
   .btn-primary {
-    @apply bg-brand-primary hover:bg-brand-hover text-white font-medium px-4 py-2 rounded-lg transition-all duration-150 active:scale-95 shadow-md shadow-brand-primary/20 flex items-center justify-center gap-2;
+    @apply bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2.5 rounded-xl transition-all duration-150 active:scale-95 shadow-sm shadow-blue-600/25 flex items-center justify-center gap-2;
   }
 
   .btn-secondary {
-    @apply bg-bg-card hover:bg-bg-hover text-text-primary border border-bg-border font-medium px-4 py-2 rounded-lg transition-all duration-150 active:scale-95 flex items-center justify-center gap-2;
+    @apply bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 font-semibold px-4 py-2.5 rounded-xl transition-all duration-150 active:scale-95 shadow-sm flex items-center justify-center gap-2;
   }
 
   .btn-accent {
-    @apply bg-brand-accent hover:opacity-90 text-bg-main font-semibold px-4 py-2 rounded-lg transition-all duration-150 active:scale-95 flex items-center justify-center gap-2;
+    @apply bg-sky-500 hover:bg-sky-600 text-white font-semibold px-4 py-2.5 rounded-xl transition-all duration-150 active:scale-95 shadow-sm shadow-sky-500/20 flex items-center justify-center gap-2;
   }
 
   .btn-ghost {
-    @apply bg-transparent hover:bg-bg-card text-text-secondary hover:text-text-primary font-medium px-3 py-1.5 rounded-lg transition-all duration-150 flex items-center justify-center gap-1.5;
+    @apply bg-transparent hover:bg-slate-100 text-slate-600 hover:text-slate-900 font-medium px-3 py-2 rounded-xl transition-all duration-150 flex items-center justify-center gap-1.5;
   }
 
-  /* Badge Styles */
+  /* Semantic Gamification Badges */
   .badge-easy {
-    @apply bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-xs px-2.5 py-0.5 rounded-full font-medium inline-flex items-center gap-1;
+    @apply bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs px-2.5 py-0.5 rounded-full font-semibold inline-flex items-center gap-1;
   }
   .badge-medium {
-    @apply bg-amber-500/10 text-amber-400 border border-amber-500/30 text-xs px-2.5 py-0.5 rounded-full font-medium inline-flex items-center gap-1;
+    @apply bg-amber-50 text-amber-700 border border-amber-200 text-xs px-2.5 py-0.5 rounded-full font-semibold inline-flex items-center gap-1;
   }
   .badge-hard {
-    @apply bg-orange-500/10 text-orange-400 border border-orange-500/30 text-xs px-2.5 py-0.5 rounded-full font-medium inline-flex items-center gap-1;
+    @apply bg-orange-50 text-orange-700 border border-orange-200 text-xs px-2.5 py-0.5 rounded-full font-semibold inline-flex items-center gap-1;
   }
   .badge-epic {
-    @apply bg-purple-500/10 text-purple-300 border border-purple-500/30 text-xs px-2.5 py-0.5 rounded-full font-medium inline-flex items-center gap-1;
+    @apply bg-purple-50 text-purple-700 border border-purple-200 text-xs px-2.5 py-0.5 rounded-full font-semibold inline-flex items-center gap-1;
   }
   .badge-legendary {
-    @apply bg-red-500/15 text-red-400 border border-red-500/40 text-xs px-2.5 py-0.5 rounded-full font-semibold inline-flex items-center gap-1 shadow-[0_0_10px_rgba(239,68,68,0.2)];
+    @apply bg-rose-50 text-rose-700 border border-rose-200 text-xs px-2.5 py-0.5 rounded-full font-semibold inline-flex items-center gap-1 shadow-sm;
   }
 
   /* XP and Progress Bars */
   .xp-bar-fill {
-    @apply bg-gradient-to-r from-brand-primary via-indigo-500 to-brand-accent h-full rounded-full transition-all duration-500 shadow-[0_0_12px_rgba(0,212,255,0.4)];
+    @apply bg-gradient-to-r from-amber-400 via-amber-500 to-yellow-400 h-full rounded-full transition-all duration-500 shadow-sm;
+  }
+
+  /* Auth Background Terminal Polish */
+  .auth-terminal-bg .atd-retro__readout,
+  .auth-terminal-bg .animated-top-dock-component__caption {
+    display: none !important;
+  }
+
+  .auth-terminal-bg .atd-retro__bar {
+    opacity: 0.35 !important;
+    filter: brightness(0.95) contrast(0.95) !important;
+    border-color: rgba(59, 130, 246, 0.25) !important;
+    pointer-events: none !important;
   }
 }
+
+/* Knowledge Quiz Card Glassmorphism Aurora Animation */
+@keyframes aurora-blob {
+  0% {
+    transform: translate(-60%, -60%) scale(1);
+  }
+  30% {
+    transform: translate(10%, -40%) scale(1.15);
+  }
+  60% {
+    transform: translate(20%, 20%) scale(1.05);
+  }
+  80% {
+    transform: translate(-40%, 10%) scale(1.2);
+  }
+  100% {
+    transform: translate(-60%, -60%) scale(1);
+  }
+}
+
+.quiz-aurora-blob {
+  animation: aurora-blob 7s ease-in-out infinite;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .quiz-aurora-blob {
+    animation: none !important;
+    transform: translate(-15%, -15%) scale(1) !important;
+  }
+}
+
+

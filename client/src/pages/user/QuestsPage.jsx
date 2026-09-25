@@ -113,11 +113,11 @@ export function QuestsPage() {
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-black text-white flex items-center gap-2.5">
-            <Sword className="w-7 h-7 text-brand-accent" />
+          <h1 className="text-2xl sm:text-3xl font-black text-slate-900 flex items-center gap-2.5">
+            <Sword className="w-7 h-7 text-blue-600" />
             <span>Quest Board</span>
           </h1>
-          <p className="text-xs sm:text-sm text-text-secondary mt-1">
+          <p className="text-xs sm:text-sm text-slate-500 mt-1">
             Browse official trials or forge custom quests to earn XP and coins.
           </p>
         </div>
@@ -129,16 +129,16 @@ export function QuestsPage() {
       </div>
 
       {/* Filters & Search Toolbar */}
-      <div className="p-4 rounded-2xl bg-bg-card border border-bg-border space-y-3">
+      <div className="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-sm space-y-3">
         <form onSubmit={handleSearch} className="flex flex-col md:flex-row gap-3">
           <div className="relative flex-1">
-            <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-text-muted" />
+            <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search quests by keywords..."
-              className="w-full bg-bg-surface border border-bg-border rounded-xl pl-10 pr-4 py-2 text-xs sm:text-sm text-text-primary placeholder:text-text-muted focus:outline-none focus:border-brand-primary"
+              className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-4 py-2 text-xs sm:text-sm text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-100"
             />
           </div>
 
@@ -146,7 +146,7 @@ export function QuestsPage() {
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="bg-bg-surface border border-bg-border rounded-xl px-3 py-2 text-xs text-text-secondary focus:outline-none focus:border-brand-primary"
+              className="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-700 focus:bg-white focus:outline-none focus:border-blue-500"
             >
               <option value="">All Statuses</option>
               <option value="todo">Todo</option>
@@ -157,7 +157,7 @@ export function QuestsPage() {
             <select
               value={categoryFilter}
               onChange={(e) => setCategoryFilter(e.target.value)}
-              className="bg-bg-surface border border-bg-border rounded-xl px-3 py-2 text-xs text-text-secondary focus:outline-none focus:border-brand-primary"
+              className="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-700 focus:bg-white focus:outline-none focus:border-blue-500"
             >
               <option value="">All Categories</option>
               <option value="coding">Coding</option>
@@ -170,7 +170,7 @@ export function QuestsPage() {
             <select
               value={difficultyFilter}
               onChange={(e) => setDifficultyFilter(e.target.value)}
-              className="bg-bg-surface border border-bg-border rounded-xl px-3 py-2 text-xs text-text-secondary focus:outline-none focus:border-brand-primary"
+              className="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-700 focus:bg-white focus:outline-none focus:border-blue-500"
             >
               <option value="">All Difficulties</option>
               <option value="easy">Easy</option>
@@ -186,12 +186,12 @@ export function QuestsPage() {
       {/* Quests List / Grid */}
       {loading ? (
         <div className="py-20 text-center space-y-2">
-          <div className="w-8 h-8 border-4 border-brand-primary border-t-transparent rounded-full animate-spin mx-auto" />
-          <p className="text-xs text-text-muted">Loading quests...</p>
+          <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto" />
+          <p className="text-xs text-slate-400">Loading quests...</p>
         </div>
       ) : quests.length === 0 ? (
-        <div className="py-16 text-center bg-bg-card/40 border border-dashed border-bg-border rounded-2xl space-y-3">
-          <p className="text-sm text-text-secondary">No quests found matching your criteria.</p>
+        <div className="py-16 text-center bg-white border border-dashed border-slate-300 rounded-2xl space-y-3 shadow-sm">
+          <p className="text-sm text-slate-600">No quests found matching your criteria.</p>
           <button
             onClick={() => {
               setStatusFilter('');
@@ -218,32 +218,32 @@ export function QuestsPage() {
                   <div className="flex items-center gap-1.5">
                     <span className={`badge-${quest.difficulty}`}>{quest.difficulty}</span>
                     {quest.isOfficial && (
-                      <span className="text-[10px] bg-brand-primary/20 text-brand-accent px-2 py-0.5 rounded-full font-bold">
+                      <span className="text-[10px] bg-blue-50 text-blue-700 border border-blue-200 px-2 py-0.5 rounded-full font-bold">
                         Official
                       </span>
                     )}
                   </div>
-                  <span className="text-[11px] font-bold text-text-muted uppercase tracking-wider">
+                  <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
                     {quest.category}
                   </span>
                 </div>
 
-                <h3 className="font-bold text-base text-white mb-1.5 line-clamp-1">
+                <h3 className="font-bold text-base text-slate-900 mb-1.5 line-clamp-1">
                   {quest.title}
                 </h3>
-                <p className="text-xs text-text-secondary line-clamp-3 mb-4 leading-relaxed">
+                <p className="text-xs text-slate-600 line-clamp-3 mb-4 leading-relaxed">
                   {quest.description}
                 </p>
               </div>
 
-              <div className="pt-3 border-t border-bg-border/60 space-y-3">
+              <div className="pt-3 border-t border-slate-100 space-y-3">
                 <div className="flex items-center justify-between text-xs">
-                  <span className="text-text-muted capitalize">
+                  <span className="text-slate-500 capitalize font-medium">
                     {quest.verificationType} verification
                   </span>
                   <div className="flex items-center gap-2">
-                    <span className="font-bold text-brand-accent">+{quest.xpReward} XP</span>
-                    <span className="text-yellow-400 font-semibold">+{quest.coinReward} Coins</span>
+                    <span className="font-bold text-amber-600">+{quest.xpReward} XP</span>
+                    <span className="text-yellow-600 font-semibold">+{quest.coinReward} Coins</span>
                   </div>
                 </div>
 
@@ -256,8 +256,8 @@ export function QuestsPage() {
                   </Link>
 
                   {quest.userStatus === 'completed' ? (
-                    <div className="px-3 py-2 text-xs font-bold text-emerald-400 bg-emerald-500/10 rounded-lg flex items-center gap-1">
-                      <CheckCircle2 className="w-3.5 h-3.5" />
+                    <div className="px-3 py-2 text-xs font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-xl flex items-center gap-1">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
                       <span>Done</span>
                     </div>
                   ) : quest.verificationType === 'self' ? (
@@ -291,26 +291,26 @@ export function QuestsPage() {
 
       {/* Create Quest Modal */}
       {showCreateModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-fade-in">
-          <div className="w-full max-w-lg p-6 bg-bg-card border border-bg-border rounded-2xl shadow-2xl relative">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-fade-in">
+          <div className="w-full max-w-lg p-6 bg-white border border-slate-200 rounded-2xl shadow-2xl relative">
             <button
               onClick={() => setShowCreateModal(false)}
-              className="absolute top-4 right-4 text-text-secondary hover:text-white p-1 rounded-lg hover:bg-bg-hover"
+              className="absolute top-4 right-4 text-slate-400 hover:text-slate-700 p-1 rounded-lg hover:bg-slate-100"
             >
               <X className="w-5 h-5" />
             </button>
 
-            <h2 className="text-xl font-bold text-white mb-1 flex items-center gap-2">
-              <Sword className="w-5 h-5 text-brand-primary" />
+            <h2 className="text-xl font-bold text-slate-900 mb-1 flex items-center gap-2">
+              <Sword className="w-5 h-5 text-blue-600" />
               <span>Forge Custom Quest</span>
             </h2>
-            <p className="text-xs text-text-secondary mb-6">
+            <p className="text-xs text-slate-500 mb-6">
               Turn a personal task, study goal, or habit into an RPG quest.
             </p>
 
             <form onSubmit={handleCreateQuest} className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-text-secondary uppercase mb-1">
+                <label className="block text-xs font-semibold text-slate-700 uppercase mb-1">
                   Quest Title
                 </label>
                 <input
@@ -319,12 +319,12 @@ export function QuestsPage() {
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   placeholder="e.g., Read 25 pages of Clean Architecture"
-                  className="w-full bg-bg-surface border border-bg-border rounded-xl px-3.5 py-2 text-sm text-text-primary focus:outline-none focus:border-brand-primary"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-100"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-text-secondary uppercase mb-1">
+                <label className="block text-xs font-semibold text-slate-700 uppercase mb-1">
                   Description
                 </label>
                 <textarea
@@ -333,19 +333,19 @@ export function QuestsPage() {
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="Detail what constitutes successful completion..."
-                  className="w-full bg-bg-surface border border-bg-border rounded-xl px-3.5 py-2 text-sm text-text-primary focus:outline-none focus:border-brand-primary"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-100"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-text-secondary uppercase mb-1">
+                  <label className="block text-xs font-semibold text-slate-700 uppercase mb-1">
                     Category
                   </label>
                   <select
                     value={category}
                     onChange={(e) => setCategory(e.target.value)}
-                    className="w-full bg-bg-surface border border-bg-border rounded-xl px-3 py-2 text-xs text-text-primary focus:outline-none focus:border-brand-primary"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-700 focus:bg-white focus:outline-none focus:border-blue-500"
                   >
                     <option value="productivity">Productivity</option>
                     <option value="coding">Coding</option>
@@ -357,13 +357,13 @@ export function QuestsPage() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-text-secondary uppercase mb-1">
+                  <label className="block text-xs font-semibold text-slate-700 uppercase mb-1">
                     Difficulty Tier
                   </label>
                   <select
                     value={difficulty}
                     onChange={(e) => setDifficulty(e.target.value)}
-                    className="w-full bg-bg-surface border border-bg-border rounded-xl px-3 py-2 text-xs text-text-primary focus:outline-none focus:border-brand-primary"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-700 focus:bg-white focus:outline-none focus:border-blue-500"
                   >
                     <option value="easy">Easy (50 XP, 10 Coins)</option>
                     <option value="medium">Medium (100 XP, 25 Coins)</option>

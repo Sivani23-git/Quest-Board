@@ -16,39 +16,62 @@ import {
   Layers,
   ArrowLeft,
 } from 'lucide-react';
+import { CompleteShelfLandingPage } from '../../shaders/landing-pages/LandingPages';
+import { CodingChallengeCard } from '../../components/coding/CodingChallengeCard';
 import api from '../../services/api';
+import '../../shaders/threeui.css';
 
 const LANGUAGE_META = {
   python: {
     name: 'Python',
     icon: '🐍',
-    gradient: 'from-sky-500/20 via-blue-600/10 to-transparent',
-    borderHover: 'hover:border-sky-500/50',
-    accentColor: '#38BDF8',
+    badgeBg: 'bg-sky-50 text-[#3776AB] border-[#3776AB]/30',
+    accentColor: '#3776AB',
+    secondaryColor: '#FFD43B',
+    hoverBorder: 'hover:border-[#3776AB]',
+    activeBorder: 'border-[#3776AB]',
+    iconBg: 'bg-sky-50 border-[#3776AB]/20 text-[#3776AB]',
+    progressBar: 'from-[#3776AB] via-[#3776AB] to-[#FFD43B]',
+    textAccent: 'text-[#3776AB]',
     tag: 'Beginner Friendly • General Purpose • DSA',
   },
   javascript: {
     name: 'JavaScript',
     icon: '🟨',
-    gradient: 'from-amber-500/20 via-yellow-600/10 to-transparent',
-    borderHover: 'hover:border-amber-500/50',
-    accentColor: '#FACC15',
+    badgeBg: 'bg-amber-50 text-amber-900 border-amber-300',
+    accentColor: '#F7DF1E',
+    secondaryColor: '#111827',
+    hoverBorder: 'hover:border-amber-400',
+    activeBorder: 'border-amber-400',
+    iconBg: 'bg-amber-50 border-amber-300 text-amber-900',
+    progressBar: 'from-[#D97706] to-[#FACC15]',
+    textAccent: 'text-amber-800',
     tag: 'Web & Fullstack • ES6+ • Dynamic Runtimes',
   },
   java: {
     name: 'Java',
     icon: '☕',
-    gradient: 'from-orange-500/20 via-red-600/10 to-transparent',
-    borderHover: 'hover:border-orange-500/50',
-    accentColor: '#FB923C',
+    badgeBg: 'bg-orange-50 text-orange-900 border-orange-300',
+    accentColor: '#E76F51',
+    secondaryColor: '#5382A1',
+    hoverBorder: 'hover:border-[#E76F51]',
+    activeBorder: 'border-[#E76F51]',
+    iconBg: 'bg-orange-50 border-[#E76F51]/20 text-[#E76F51]',
+    progressBar: 'from-[#E76F51] to-[#5382A1]',
+    textAccent: 'text-[#E76F51]',
     tag: 'Object-Oriented • Collections • Enterprise',
   },
   cpp: {
     name: 'C++',
     icon: '⚡',
-    gradient: 'from-indigo-500/20 via-purple-600/10 to-transparent',
-    borderHover: 'hover:border-indigo-500/50',
-    accentColor: '#818CF8',
+    badgeBg: 'bg-blue-50 text-blue-800 border-blue-200',
+    accentColor: '#2563EB',
+    secondaryColor: '#60A5FA',
+    hoverBorder: 'hover:border-[#2563EB]',
+    activeBorder: 'border-[#2563EB]',
+    iconBg: 'bg-blue-50 border-blue-200 text-blue-700',
+    progressBar: 'from-[#2563EB] to-[#60A5FA]',
+    textAccent: 'text-[#2563EB]',
     tag: 'High Performance • STL • Memory & DSA',
   },
 };
@@ -99,6 +122,17 @@ export function CodingPage() {
     loadPath();
   }, [selectedLanguage]);
 
+  // Listen for book course selection events from ThreeUI Bookshelf
+  useEffect(() => {
+    const handleShelfMessage = (e) => {
+      if (e.data?.type === 'threeui-shelf-select-course' && e.data?.courseId) {
+        handleSelectLanguage(e.data.courseId);
+      }
+    };
+    window.addEventListener('message', handleShelfMessage);
+    return () => window.removeEventListener('message', handleShelfMessage);
+  }, []);
+
   const handleSelectLanguage = (langId) => {
     setSelectedLanguage(langId);
     setSearchParams({ lang: langId });
@@ -124,7 +158,8 @@ export function CodingPage() {
     const meta = LANGUAGE_META[selectedLanguage] || {
       name: selectedLanguage,
       icon: '💻',
-      accentColor: '#38BDF8',
+      badgeBg: 'bg-blue-50 text-blue-700 border-blue-200',
+      accentColor: '#3B82F6',
     };
     const { userProgress, stages } = learningPath;
 
@@ -134,52 +169,52 @@ export function CodingPage() {
         <div className="flex items-center justify-between gap-4">
           <button
             onClick={handleBackToAcademy}
-            className="inline-flex items-center gap-2 text-xs font-semibold text-text-secondary hover:text-white transition-colors bg-bg-card border border-bg-border/80 px-3 py-1.5 rounded-xl hover:border-brand-primary/40"
+            className="inline-flex items-center gap-2 text-xs font-semibold text-slate-700 hover:text-slate-900 transition-colors bg-white border border-slate-200 px-3.5 py-2 rounded-xl hover:border-blue-300 shadow-sm"
           >
-            <ArrowLeft className="w-4 h-4 text-brand-accent" />
+            <ArrowLeft className="w-4 h-4 text-blue-600" />
             <span>Back to All Learning Paths</span>
           </button>
 
           <div className="flex items-center gap-2">
             <span className="text-xl">{meta.icon}</span>
-            <span className="text-sm font-bold text-white">{meta.name} Journey</span>
+            <span className="text-sm font-bold text-slate-900">{meta.name} Journey</span>
           </div>
         </div>
 
         {/* Hero Path Banner */}
-        <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-bg-card via-bg-card to-bg-surface border border-bg-border relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-80 h-80 bg-brand-primary/10 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
+        <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-slate-50 via-sky-50/50 to-blue-50/50 border border-slate-200/90 shadow-sm relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-80 h-80 bg-blue-400/10 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
 
           <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div className="space-y-2 max-w-xl">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-primary/15 border border-brand-primary/30 text-[11px] font-bold text-brand-accent uppercase tracking-wider">
+              <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider ${meta.badgeBg}`}>
                 <span>{meta.icon} {meta.name} Mastery Path</span>
               </div>
-              <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+              <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
                 {meta.name} Learning Journey
               </h1>
-              <p className="text-xs sm:text-sm text-text-secondary leading-relaxed">
+              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
                 {learningPath.language?.description}
               </p>
             </div>
 
             {/* Path Stats Card */}
-            <div className="grid grid-cols-3 gap-3 p-4 rounded-2xl bg-bg-surface/80 border border-bg-border shrink-0 min-w-[280px]">
+            <div className="grid grid-cols-3 gap-3 p-4 rounded-2xl bg-white border border-slate-200 shadow-sm shrink-0 min-w-[280px]">
               <div className="text-center p-2">
-                <div className="text-[10px] uppercase font-bold text-text-muted">Mastery</div>
-                <div className="text-lg font-black text-brand-accent mt-0.5">
+                <div className="text-[10px] uppercase font-bold text-slate-400">Mastery</div>
+                <div className="text-lg font-black text-blue-600 mt-0.5">
                   Lv. {userProgress?.languageLevel || 1}
                 </div>
               </div>
-              <div className="text-center p-2 border-x border-bg-border/60">
-                <div className="text-[10px] uppercase font-bold text-text-muted">Language XP</div>
-                <div className="text-lg font-black text-amber-400 mt-0.5">
+              <div className="text-center p-2 border-x border-slate-100">
+                <div className="text-[10px] uppercase font-bold text-slate-400">Language XP</div>
+                <div className="text-lg font-black text-amber-600 mt-0.5">
                   {userProgress?.languageXP || 0}
                 </div>
               </div>
               <div className="text-center p-2">
-                <div className="text-[10px] uppercase font-bold text-text-muted">Completed</div>
-                <div className="text-lg font-black text-emerald-400 mt-0.5">
+                <div className="text-[10px] uppercase font-bold text-slate-400">Completed</div>
+                <div className="text-lg font-black text-emerald-600 mt-0.5">
                   {userProgress?.completedCount || 0}/{userProgress?.totalChallenges || 32}
                 </div>
               </div>
@@ -187,14 +222,14 @@ export function CodingPage() {
           </div>
 
           {/* Progress Bar */}
-          <div className="mt-6 pt-6 border-t border-bg-border/60">
+          <div className="mt-6 pt-6 border-t border-slate-200/60">
             <div className="flex items-center justify-between text-xs font-semibold mb-2">
-              <span className="text-text-secondary">Overall Path Completion</span>
-              <span className="text-white font-bold">{userProgress?.progressPercent || 0}%</span>
+              <span className="text-slate-600">Overall Path Completion</span>
+              <span className="text-slate-900 font-bold">{userProgress?.progressPercent || 0}%</span>
             </div>
-            <div className="h-2.5 w-full bg-bg-surface rounded-full overflow-hidden border border-bg-border/50">
+            <div className="h-2.5 w-full bg-slate-200/80 rounded-full overflow-hidden">
               <div
-                className="h-full bg-gradient-to-r from-brand-primary via-indigo-500 to-brand-accent rounded-full transition-all duration-500"
+                className={`h-full bg-gradient-to-r ${meta.progressBar} rounded-full transition-all duration-500 shadow-xs`}
                 style={{ width: `${userProgress?.progressPercent || 0}%` }}
               />
             </div>
@@ -204,11 +239,11 @@ export function CodingPage() {
         {/* Stage Roadmap Section */}
         <div className="space-y-6">
           <div className="flex items-center justify-between">
-            <h2 className="text-lg sm:text-xl font-bold text-white flex items-center gap-2">
-              <Layers className="w-5 h-5 text-brand-accent" />
+            <h2 className="text-lg sm:text-xl font-bold text-slate-900 flex items-center gap-2">
+              <Layers className="w-5 h-5 text-blue-600" />
               <span>Learning Roadmap & Stages</span>
             </h2>
-            <span className="text-xs text-text-muted font-medium">
+            <span className="text-xs text-slate-500 font-medium">
               8 Progressive Stages • 32 Curated Challenges
             </span>
           </div>
@@ -222,23 +257,21 @@ export function CodingPage() {
               return (
                 <div
                   key={stage.stageNumber}
-                  className={`rounded-2xl border transition-all duration-200 overflow-hidden ${
-                    stage.isUnlocked
-                      ? 'bg-bg-card border-bg-border'
-                      : 'bg-bg-card/40 border-bg-border/40 opacity-75'
-                  }`}
+                  className={`rounded-2xl border transition-all duration-200 overflow-hidden shadow-sm ${stage.isUnlocked
+                      ? 'bg-white border-slate-200/90'
+                      : 'bg-slate-50 border-slate-200/50 opacity-80'
+                    }`}
                 >
                   {/* Stage Header */}
-                  <div className="p-5 bg-bg-surface/50 border-b border-bg-border/60 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div className="p-5 bg-slate-50/80 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div className="flex items-center gap-3.5">
                       <div
-                        className={`w-10 h-10 rounded-xl flex items-center justify-center font-black text-sm border ${
-                          stage.isCompleted
-                            ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40'
+                        className={`w-10 h-10 rounded-xl flex items-center justify-center font-black text-sm border ${stage.isCompleted
+                            ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
                             : stage.isUnlocked
-                            ? 'bg-brand-primary/20 text-brand-accent border-brand-primary/40'
-                            : 'bg-bg-surface text-text-muted border-bg-border'
-                        }`}
+                              ? 'bg-blue-50 text-blue-700 border-blue-200'
+                              : 'bg-slate-100 text-slate-400 border-slate-200'
+                          }`}
                       >
                         {stage.isCompleted ? (
                           <CheckCircle2 className="w-5 h-5" />
@@ -251,15 +284,15 @@ export function CodingPage() {
 
                       <div>
                         <div className="flex items-center gap-2">
-                          <span className="text-xs font-bold text-text-muted uppercase tracking-wider">
+                          <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">
                             Stage {stage.stageNumber}
                           </span>
-                          <span className="text-xs text-text-muted">•</span>
-                          <span className="text-xs font-bold text-brand-accent">
+                          <span className="text-xs text-slate-300">•</span>
+                          <span className="text-xs font-bold text-blue-600">
                             {stage.topic}
                           </span>
                         </div>
-                        <h3 className="text-base font-bold text-white mt-0.5">
+                        <h3 className="text-base font-bold text-slate-900 mt-0.5">
                           {stage.stageName}
                         </h3>
                       </div>
@@ -268,17 +301,17 @@ export function CodingPage() {
                     {/* Stage Status / Metric */}
                     <div className="flex items-center gap-4">
                       <div className="text-right">
-                        <div className="text-xs font-bold text-white">
+                        <div className="text-xs font-bold text-slate-900">
                           {stage.completedChallenges} / {stage.totalChallenges} Solved
                         </div>
-                        <div className="text-[11px] text-text-muted">
+                        <div className="text-[11px] text-slate-500 font-medium">
                           {stage.isCompleted ? 'Stage Mastered 🎉' : stage.isUnlocked ? 'Available to Learn' : 'Locked'}
                         </div>
                       </div>
 
-                      <div className="w-20 h-2 bg-bg-surface rounded-full overflow-hidden border border-bg-border/50 hidden sm:block">
+                      <div className="w-20 h-2 bg-slate-200 rounded-full overflow-hidden hidden sm:block">
                         <div
-                          className="h-full bg-emerald-400 rounded-full transition-all"
+                          className="h-full bg-emerald-500 rounded-full transition-all"
                           style={{ width: `${stagePercent}%` }}
                         />
                       </div>
@@ -288,71 +321,12 @@ export function CodingPage() {
                   {/* Stage Challenge List */}
                   <div className="p-4 sm:p-5 grid gap-3 sm:grid-cols-2">
                     {stage.challenges.map((challenge) => (
-                      <div
+                      <CodingChallengeCard
                         key={challenge._id}
-                        className={`p-4 rounded-xl border transition-all flex flex-col justify-between gap-3 ${
-                          challenge.isSolved
-                            ? 'bg-emerald-500/[0.04] border-emerald-500/30 hover:border-emerald-500/50'
-                            : stage.isUnlocked
-                            ? 'bg-bg-surface/60 border-bg-border hover:border-brand-primary/40 hover:bg-bg-surface'
-                            : 'bg-bg-surface/30 border-bg-border/30'
-                        }`}
-                      >
-                        <div>
-                          <div className="flex items-center justify-between gap-2 mb-2">
-                            <div className="flex items-center gap-2">
-                              <span className={`badge-${challenge.difficulty}`}>
-                                {challenge.difficulty}
-                              </span>
-                              <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider">
-                                {challenge.category}
-                              </span>
-                            </div>
-
-                            {challenge.isSolved ? (
-                              <span className="text-xs font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full flex items-center gap-1">
-                                <CheckCircle2 className="w-3.5 h-3.5" />
-                                <span>Solved</span>
-                              </span>
-                            ) : !stage.isUnlocked ? (
-                              <span className="text-xs text-text-muted flex items-center gap-1">
-                                <Lock className="w-3 h-3" />
-                                <span>Locked</span>
-                              </span>
-                            ) : null}
-                          </div>
-
-                          <h4 className="text-sm font-bold text-white mb-1.5 line-clamp-1">
-                            {challenge.title}
-                          </h4>
-                          <p className="text-xs text-text-secondary line-clamp-2 leading-relaxed">
-                            {challenge.description}
-                          </p>
-                        </div>
-
-                        <div className="pt-3 border-t border-bg-border/50 flex items-center justify-between">
-                          <div className="text-xs">
-                            <span className="font-bold text-brand-accent">
-                              +{challenge.xpReward} XP
-                            </span>
-                            <span className="text-yellow-400 font-semibold ml-2">
-                              +{challenge.coinReward} Coins
-                            </span>
-                          </div>
-
-                          <Link
-                            to={`/coding/${challenge._id}`}
-                            className={`text-xs py-1.5 px-3 rounded-xl font-semibold flex items-center gap-1.5 transition-all ${
-                              challenge.isSolved
-                                ? 'bg-emerald-500/20 text-emerald-300 hover:bg-emerald-500/30'
-                                : 'btn-primary shadow-sm shadow-brand-primary/20'
-                            }`}
-                          >
-                            <Terminal className="w-3.5 h-3.5" />
-                            <span>{challenge.isSolved ? 'Solve Again' : 'Code Now'}</span>
-                          </Link>
-                        </div>
-                      </div>
+                        challenge={challenge}
+                        language={selectedLanguage}
+                        isStageUnlocked={stage.isUnlocked}
+                      />
                     ))}
                   </div>
                 </div>
@@ -368,209 +342,140 @@ export function CodingPage() {
   return (
     <div className="space-y-8 animate-fade-in">
       {/* Header Banner */}
-      <div className="p-6 sm:p-10 rounded-3xl bg-gradient-to-r from-bg-card via-indigo-950/20 to-bg-surface border border-bg-border relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-brand-primary/10 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
+      <div className="p-6 sm:p-10 rounded-3xl bg-gradient-to-r from-teal-50/80 via-sky-50/60 to-blue-50/70 border border-slate-200/90 shadow-sm relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-blue-400/10 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
 
         <div className="relative z-10 max-w-2xl space-y-3">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-primary/15 border border-brand-primary/30 text-xs font-bold text-brand-accent">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-200 text-xs font-bold text-blue-700">
             <Sparkles className="w-3.5 h-3.5" />
             <span>Language-Specific Learning System</span>
           </div>
 
-          <h1 className="text-2xl sm:text-4xl font-black text-white tracking-tight">
+          <h1 className="text-2xl sm:text-4xl font-black text-slate-900 tracking-tight">
             Coding Academy
           </h1>
 
-          <p className="text-xs sm:text-sm text-text-secondary leading-relaxed">
+          <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
             Choose a programming language, embark on a structured step-by-step learning journey,
             solve language-specific algorithmic challenges in a sandboxed runtime, and level up your developer mastery.
           </p>
         </div>
       </div>
 
-      {/* Active Paths Section (If user has started any) */}
-      {languages.some((l) => l.userProgress?.isStarted) && (
-        <div className="space-y-4">
-          <h2 className="text-lg font-bold text-white flex items-center gap-2">
-            <Flame className="w-5 h-5 text-amber-400" />
-            <span>My Active Learning Paths</span>
-          </h2>
-
-          <div className="grid md:grid-cols-2 gap-4">
-            {languages
-              .filter((l) => l.userProgress?.isStarted)
-              .map((lang) => {
-                const meta = LANGUAGE_META[lang.id] || {
-                  name: lang.name,
-                  icon: lang.icon,
-                  gradient: 'from-brand-primary/20 to-transparent',
-                  borderHover: 'hover:border-brand-primary/50',
-                };
-
-                return (
-                  <div
-                    key={lang.id}
-                    onClick={() => handleSelectLanguage(lang.id)}
-                    className="p-5 rounded-2xl bg-bg-card border border-bg-border hover:border-brand-primary/50 transition-all cursor-pointer group flex flex-col justify-between gap-4"
-                  >
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="flex items-center gap-3">
-                        <span className="text-3xl p-2 rounded-xl bg-bg-surface border border-bg-border">
-                          {lang.icon}
-                        </span>
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <h3 className="text-lg font-bold text-white group-hover:text-brand-accent transition-colors">
-                              {lang.name}
-                            </h3>
-                            <span className="text-xs font-bold text-brand-accent bg-brand-primary/15 px-2.5 py-0.5 rounded-full border border-brand-primary/30">
-                              Lv. {lang.userProgress?.languageLevel || 1}
-                            </span>
-                          </div>
-                          <p className="text-xs text-text-muted mt-0.5">
-                            Stage {lang.userProgress?.currentStage || 1} • {lang.userProgress?.completedCount || 0}/{lang.totalChallenges} challenges solved
-                          </p>
-                        </div>
-                      </div>
-
-                      <span className="text-xs font-black text-white bg-bg-surface px-2.5 py-1 rounded-xl border border-bg-border">
-                        {lang.userProgress?.progressPercent || 0}%
-                      </span>
-                    </div>
-
-                    <div>
-                      <div className="h-2 w-full bg-bg-surface rounded-full overflow-hidden border border-bg-border/40 mb-3">
-                        <div
-                          className="h-full bg-gradient-to-r from-brand-primary to-brand-accent rounded-full transition-all duration-500"
-                          style={{ width: `${lang.userProgress?.progressPercent || 0}%` }}
-                        />
-                      </div>
-
-                      <div className="flex items-center justify-between text-xs font-semibold">
-                        <span className="text-amber-400 font-bold">
-                          +{lang.userProgress?.languageXP || 0} Language XP
-                        </span>
-                        <span className="text-brand-accent flex items-center gap-1 group-hover:translate-x-1 transition-transform">
-                          <span>Continue Learning</span>
-                          <ArrowRight className="w-3.5 h-3.5" />
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-          </div>
-        </div>
-      )}
-
-      {/* Choose Your Learning Path Cards */}
+      {/* 3D Interactive Bookshelf Course-Selection Section */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-lg sm:text-xl font-bold text-white flex items-center gap-2">
-              <BookOpen className="w-5 h-5 text-brand-accent" />
-              <span>Choose Your Learning Path</span>
+            <h2 className="text-lg sm:text-xl font-bold text-slate-900 flex items-center gap-2">
+              <BookOpen className="w-5 h-5 text-blue-600" />
+              <span>Interactive 3D Course Library</span>
             </h2>
-            <p className="text-xs text-text-secondary mt-0.5">
-              Select a language to browse curriculum stages, topics, and challenges.
+            <p className="text-xs text-slate-500 mt-0.5">
+              Interact with the 3D volume shelf. Select a language course volume to open its curriculum roadmap.
             </p>
           </div>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-6">
-          {languages.map((lang) => {
-            const meta = LANGUAGE_META[lang.id] || {
-              name: lang.name,
-              icon: lang.icon,
-              gradient: 'from-brand-primary/20 to-transparent',
-              borderHover: 'hover:border-brand-primary/50',
-              tag: 'Language Learning Path',
-            };
-            const hasStarted = lang.userProgress?.isStarted;
+        <div
+          className="w-full rounded-3xl overflow-hidden border border-slate-200 bg-[#0A0F1E] shadow-xl shadow-slate-300/40 relative"
+          style={{ width: '100%', height: '640px', minHeight: '600px' }}
+        >
+          <CompleteShelfLandingPage
+            headingFont="iowan-old-style"
+            bodyFont="inter"
+            headingWeight="400"
+            bodyWeight="400"
+            primaryColor="#3B82F6"
+            headingSize={60}
+            bodySize={12}
+            headingLetterSpacing={-0.055}
+            style={{ width: '100%', height: '100%', minHeight: '600px' }}
+            className="w-full h-full rounded-3xl border-0"
+          />
+        </div>
+      </div>
 
-            return (
-              <div
-                key={lang.id}
-                className={`p-6 sm:p-7 rounded-3xl bg-bg-card border border-bg-border ${meta.borderHover} transition-all duration-200 flex flex-col justify-between gap-6 relative overflow-hidden group shadow-lg shadow-black/20`}
-              >
-                <div className="space-y-4">
-                  {/* Language Top Header */}
+      {/* Learning Paths Section (All 4 Languages with Distinct Visual Identities) */}
+      {languages.length > 0 && (
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg sm:text-xl font-bold text-slate-900 flex items-center gap-2">
+              <Flame className="w-5 h-5 text-orange-500" />
+              <span>Available Learning Paths</span>
+            </h2>
+            <span className="text-xs text-slate-500 font-medium font-mono">
+              4 Languages • 128+ Challenges
+            </span>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-4">
+            {languages.map((lang) => {
+              const meta = LANGUAGE_META[lang.id] || {
+                name: lang.name,
+                icon: lang.icon,
+                badgeBg: 'bg-blue-50 text-blue-700 border-blue-200',
+                accentColor: '#3B82F6',
+                hoverBorder: 'hover:border-blue-400',
+                iconBg: 'bg-slate-50 border-slate-200',
+                progressBar: 'from-blue-600 to-sky-400',
+                textAccent: 'text-blue-600',
+              };
+
+              return (
+                <div
+                  key={lang.id}
+                  onClick={() => handleSelectLanguage(lang.id)}
+                  className={`p-5 rounded-2xl bg-white border-2 border-slate-200/90 ${meta.hoverBorder} hover:shadow-md transition-all cursor-pointer group flex flex-col justify-between gap-4 shadow-xs hover:-translate-y-0.5`}
+                >
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex items-center gap-3.5">
-                      <div className="w-14 h-14 rounded-2xl bg-bg-surface border border-bg-border flex items-center justify-center text-3xl shadow-md">
+                      <div className={`text-3xl p-2.5 rounded-2xl border ${meta.iconBg} shadow-2xs shrink-0 group-hover:scale-105 transition-transform`}>
                         {lang.icon}
                       </div>
-
                       <div>
-                        <div className="flex items-center gap-2">
-                          <h3 className="text-xl font-bold text-white group-hover:text-brand-accent transition-colors">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <h3 className="text-lg font-bold text-slate-900 group-hover:text-slate-900 transition-colors">
                             {lang.name}
                           </h3>
-                          {hasStarted && (
-                            <span className="text-xs font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/30">
-                              Lv. {lang.userProgress?.languageLevel}
-                            </span>
-                          )}
+                          <span className={`text-xs font-bold px-2.5 py-0.5 rounded-full border shadow-2xs font-mono ${meta.badgeBg}`}>
+                            Lv. {lang.userProgress?.languageLevel || 1}
+                          </span>
                         </div>
-                        <span className="text-[11px] font-semibold text-text-muted">
-                          {meta.tag}
-                        </span>
+                        <p className="text-xs text-slate-500 mt-1">
+                          Stage {lang.userProgress?.currentStage || 1} • {lang.userProgress?.completedCount || 0}/{lang.totalChallenges} challenges solved
+                        </p>
                       </div>
                     </div>
 
-                    <span className="text-xs font-bold text-text-muted bg-bg-surface px-3 py-1 rounded-xl border border-bg-border/60">
-                      {lang.totalChallenges} Challenges
+                    <span className="text-xs font-black text-slate-800 bg-slate-100 px-2.5 py-1 rounded-xl border border-slate-200 font-mono shrink-0">
+                      {lang.userProgress?.progressPercent || 0}%
                     </span>
                   </div>
 
-                  <p className="text-xs sm:text-sm text-text-secondary leading-relaxed">
-                    {lang.description}
-                  </p>
+                  <div>
+                    <div className="h-2.5 w-full bg-slate-100 rounded-full overflow-hidden border border-slate-200 p-0.5 mb-3">
+                      <div
+                        className={`h-full bg-gradient-to-r ${meta.progressBar} rounded-full transition-all duration-500 shadow-xs`}
+                        style={{ width: `${Math.max(lang.userProgress?.isStarted ? 6 : 0, lang.userProgress?.progressPercent || 0)}%` }}
+                      />
+                    </div>
 
-                  {/* Curriculum Breadcrumbs */}
-                  <div className="p-3 rounded-xl bg-bg-surface/70 border border-bg-border/60 text-[11px] font-mono text-text-muted space-y-1">
-                    <div className="text-[10px] uppercase font-bold text-brand-accent">Curriculum Progression</div>
-                    <div className="truncate">{lang.curriculumSummary}</div>
+                    <div className="flex items-center justify-between text-xs font-semibold">
+                      <span className="text-amber-600 font-bold font-mono">
+                        +{lang.userProgress?.languageXP || 0} Language XP
+                      </span>
+                      <span className={`font-bold flex items-center gap-1 group-hover:translate-x-1 transition-transform ${meta.textAccent}`}>
+                        <span>Continue Learning</span>
+                        <ArrowRight className="w-3.5 h-3.5" />
+                      </span>
+                    </div>
                   </div>
                 </div>
-
-                {/* Card Footer Progress & Action */}
-                <div className="pt-5 border-t border-bg-border/60 space-y-4">
-                  {hasStarted ? (
-                    <div>
-                      <div className="flex items-center justify-between text-xs mb-1.5">
-                        <span className="text-text-secondary">Progress: {lang.userProgress?.progressPercent}%</span>
-                        <span className="font-bold text-white">
-                          {lang.userProgress?.completedCount} / {lang.totalChallenges} completed
-                        </span>
-                      </div>
-                      <div className="h-2 w-full bg-bg-surface rounded-full overflow-hidden border border-bg-border/40">
-                        <div
-                          className="h-full bg-gradient-to-r from-brand-primary to-brand-accent rounded-full transition-all"
-                          style={{ width: `${lang.userProgress?.progressPercent}%` }}
-                        />
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="flex items-center justify-between text-xs text-text-muted">
-                      <span>Status: Not started yet</span>
-                      <span>8 Stages • +{lang.totalXP || 3200} Total XP</span>
-                    </div>
-                  )}
-
-                  <button
-                    onClick={() => handleSelectLanguage(lang.id)}
-                    className="w-full btn-primary py-2.5 px-4 text-xs font-bold flex items-center justify-center gap-2 shadow-md shadow-brand-primary/20"
-                  >
-                    <span>{hasStarted ? 'Continue Learning' : 'Start Learning Journey'}</span>
-                    <ArrowRight className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

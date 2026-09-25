@@ -14,19 +14,19 @@ export function XPBar({ progress = {}, showLabel = true }) {
   return (
     <div className="w-full">
       {showLabel && (
-        <div className="flex items-center justify-between text-xs mb-1.5 font-medium">
-          <span className="flex items-center gap-1 text-brand-accent">
-            <Zap className="w-3.5 h-3.5 fill-brand-accent" />
+        <div className="flex items-center justify-between text-xs mb-1.5 font-semibold">
+          <span className="flex items-center gap-1 text-amber-600">
+            <Zap className="w-3.5 h-3.5 fill-amber-500 text-amber-500" />
             <span>Level {currentLevel} Progress</span>
           </span>
-          <span className="text-text-secondary">
+          <span className="text-slate-500">
             {xpIntoCurrentLevel.toLocaleString()} / {xpNeededForNextLevel.toLocaleString()} XP{' '}
-            <span className="text-brand-accent font-semibold">({progressPercent}%)</span>
+            <span className="text-amber-600 font-bold">({progressPercent}%)</span>
           </span>
         </div>
       )}
 
-      <div className="w-full h-2.5 bg-bg-surface rounded-full overflow-hidden p-0.5 border border-bg-border shadow-inner">
+      <div className="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden p-0.5 border border-slate-200">
         <div
           className="xp-bar-fill h-full rounded-full transition-all duration-700 ease-out"
           style={{ width: `${Math.max(3, Math.min(100, progressPercent))}%` }}

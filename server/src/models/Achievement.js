@@ -31,6 +31,12 @@ const achievementSchema = new mongoose.Schema(
       type: Number,
       default: 25,
     },
+    category: {
+      type: String,
+      enum: ['quests', 'coding', 'academy', 'quizzes', 'streak', 'level', 'skills', 'special'],
+      default: 'quests',
+      index: true,
+    },
     requirements: {
       type: {
         type: String,
@@ -40,7 +46,14 @@ const achievementSchema = new mongoose.Schema(
           'level',
           'xp_total',
           'coding_count',
+          'coding_languages',
+          'academy_stage',
+          'academy_full_path',
+          'academy_languages_active',
           'quiz_count',
+          'quiz_perfect',
+          'skill_level_any',
+          'skills_multi_level',
           'skill_level',
           'coins_spent',
           'quest_in_day',
@@ -64,6 +77,10 @@ const achievementSchema = new mongoose.Schema(
     isSecret: {
       type: Boolean,
       default: false,
+    },
+    isActive: {
+      type: Boolean,
+      default: true,
     },
   },
   {

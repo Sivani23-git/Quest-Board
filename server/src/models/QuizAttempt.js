@@ -36,6 +36,18 @@ const quizAttemptSchema = new mongoose.Schema(
       type: Number,
       default: 1,
     },
+    timeTaken: {
+      type: Number, // In seconds
+      default: 0,
+    },
+    xpEarned: {
+      type: Number,
+      default: 0,
+    },
+    coinsEarned: {
+      type: Number,
+      default: 0,
+    },
     startedAt: {
       type: Date,
       default: Date.now,

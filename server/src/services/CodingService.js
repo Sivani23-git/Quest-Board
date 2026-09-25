@@ -182,6 +182,8 @@ export class CodingService {
     let coinsEarned = 0;
     let isFirstSolve = false;
     let languageProgress = null;
+    let xpResult = null;
+    let coinResult = null;
 
     if (isSubmit && isAllPassed) {
       // Check if user has previously solved this challenge via UserLanguageProgress
@@ -197,7 +199,7 @@ export class CodingService {
         coinsEarned = challenge.coinReward || 25;
 
         // 1. Award Global XP
-        await XPService.award(
+        xpResult = await XPService.award(
           userId,
           xpEarned,
           'coding',
@@ -207,7 +209,7 @@ export class CodingService {
         );
 
         // 2. Award Coins
-        await CoinService.award(
+        coinResult = await CoinService.award(
           userId,
           coinsEarned,
           'coding',
@@ -315,6 +317,11 @@ export class CodingService {
       coinsEarned,
       isFirstSolve,
       languageProgress,
+      totalXP: xpResult?.totalXP,
+      currentLevel: xpResult?.currentLevel,
+      xpProgress: xpResult?.progress || null,
+      levelUp: xpResult?.levelUp || null,
+      coinBalance: coinResult?.coinBalance,
     };
   }
 }

@@ -14,6 +14,26 @@ const userAchievementSchema = new mongoose.Schema(
       required: true,
       index: true,
     },
+    unlocked: {
+      type: Boolean,
+      default: true,
+    },
+    unlockedAt: {
+      type: Date,
+      default: Date.now,
+    },
+    claimed: {
+      type: Boolean,
+      default: false,
+    },
+    claimedAt: {
+      type: Date,
+      default: null,
+    },
+    progress: {
+      type: Number,
+      default: 0,
+    },
     earnedAt: {
       type: Date,
       default: Date.now,

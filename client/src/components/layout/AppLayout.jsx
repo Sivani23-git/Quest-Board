@@ -10,14 +10,14 @@ export function AppLayout() {
   const { levelUpData, clearLevelUp } = useAuth();
 
   return (
-    <div className="min-h-screen bg-bg-main text-text-primary flex flex-col selection:bg-brand-primary selection:text-white">
+    <div className="min-h-screen bg-[#F8FAFC] text-slate-900 flex flex-col selection:bg-blue-600 selection:text-white relative overflow-x-hidden">
       {/* Top Navigation */}
       <Navbar
         onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)}
         isSidebarOpen={isSidebarOpen}
       />
 
-      <div className="flex-1 flex max-w-7xl w-full mx-auto">
+      <div className="flex-1 flex max-w-7xl w-full mx-auto relative z-10">
         {/* Left Navigation Sidebar */}
         <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
 

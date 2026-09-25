@@ -120,6 +120,14 @@ describe('⚔️ QuestBoard Comprehensive Integration Tests', () => {
     // Should have automatically unlocked the "First Steps" achievement!
     const unlocked = res.body.data.unlockedAchievements;
     expect(unlocked.some((a) => a.name === 'First Steps')).toBe(true);
+
+    // Claim the unlocked achievement reward to test claim endpoint & award coins (+15)
+    const firstStepsAch = unlocked.find((a) => a.name === 'First Steps');
+    const claimRes = await request(app)
+      .post(`/api/v1/achievements/${firstStepsAch._id}/claim`)
+      .set('Authorization', `Bearer ${userToken}`);
+    expect(claimRes.status).toBe(200);
+    expect(claimRes.body.data.coinsEarned).toBe(15);
   });
 
   it('6. Should prevent duplicate completion of the same personal quest', async () => {

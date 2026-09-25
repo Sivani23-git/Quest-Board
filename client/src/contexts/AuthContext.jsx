@@ -59,6 +59,21 @@ export function AuthProvider({ children }) {
     setLevelUpData(null);
   };
 
+  const refreshUser = async () => {
+    const currentToken = token || localStorage.getItem('questboard_token');
+    if (currentToken) {
+      try {
+        const res = await api.get('/auth/me');
+        if (res && res.user) {
+          setUser(res.user);
+          return res.user;
+        }
+      } catch (err) {
+        console.warn('[AuthContext] refreshUser failed:', err.message);
+      }
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -70,6 +85,7 @@ export function AuthProvider({ children }) {
         register,
         logout,
         updateUserMetrics,
+        refreshUser,
         levelUpData,
         triggerLevelUp,
         clearLevelUp,

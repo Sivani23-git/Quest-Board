@@ -10,21 +10,22 @@
   <title>Coding Academy — Language Learning Library</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Press+Start+2P&display=swap" rel="stylesheet">
   <style>
     :root {
-      color-scheme: dark;
-      --paper: #0b1226;
-      --paper-deep: #060a17;
-      --paper-pale: #e0f2fe;
-      --ink: #f0f9ff;
-      --ink-soft: #94a3b8;
-      --walnut: #1e1b4b;
-      --walnut-deep: #0f0e26;
-      --rule: rgba(240, 249, 255, 0.2);
-      --accent: #38bdf8;
-      --serif: "Iowan Old Style", "Baskerville", "Times New Roman", serif;
-      --mono: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+      color-scheme: light;
+      --paper: #E8F8F3;
+      --paper-deep: #C8E9DF;
+      --paper-pale: #F4FBF8;
+      --ink: #0F172A;
+      --ink-soft: #475569;
+      --walnut: #88BDB3;
+      --walnut-deep: #689E94;
+      --rule: rgba(15, 23, 42, 0.12);
+      --accent: #2563EB;
+      --serif: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --mono: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --pixel: "Press Start 2P", monospace;
       --ease-out: cubic-bezier(0.2, 0.72, 0.24, 1);
     }
 
@@ -1146,6 +1147,7 @@
     }
 
     /* V2 — an original editorial system built around the books, not a framed interface. */
+    /* V2 — Pastel RPG fantasy coding library for QuestBoard. */
     body {
       font-family: var(--mono);
     }
@@ -1155,19 +1157,49 @@
       inset: 0;
       z-index: 4;
       background:
-        linear-gradient(180deg, rgba(0, 0, 0, 0.08), transparent 22%),
-        linear-gradient(0deg, rgba(0, 0, 0, 0.12), transparent 22%);
+        radial-gradient(ellipse at 50% 15%, rgba(255, 255, 255, 0.65) 0%, transparent 70%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.4) 0%, transparent 35%, rgba(180, 220, 210, 0.3) 100%);
       content: "";
-      opacity: 0.52;
+      opacity: 0.9;
       pointer-events: none;
       transition: opacity 600ms var(--ease-out);
     }
 
+    .pixel-decorations {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 2;
+      overflow: hidden;
+    }
+
+    .pixel-sparkle {
+      position: absolute;
+      width: 5px;
+      height: 5px;
+      background: #38bdf8;
+      box-shadow: 0 0 6px rgba(56, 189, 248, 0.7);
+      opacity: 0.7;
+      animation: sparkleFloat 4s ease-in-out infinite alternate;
+    }
+    .p-s1 { top: 14%; left: 8%; background: #38bdf8; width: 5px; height: 5px; animation-duration: 3.6s; }
+    .p-s2 { top: 20%; right: 12%; background: #a78bfa; width: 6px; height: 6px; animation-duration: 4.8s; animation-delay: 1s; }
+    .p-s3 { top: 72%; left: 10%; background: #34d399; width: 4px; height: 4px; animation-duration: 4.2s; animation-delay: 0.5s; }
+    .p-s4 { top: 78%; right: 9%; background: #fbbf24; width: 5px; height: 5px; animation-duration: 5s; animation-delay: 1.5s; }
+    .p-s5 { top: 16%; left: 48%; background: #f472b6; width: 4px; height: 4px; animation-duration: 3.8s; animation-delay: 2s; }
+    .p-s6 { bottom: 18%; left: 45%; background: #38bdf8; width: 5px; height: 5px; animation-duration: 4.5s; animation-delay: 0.8s; }
+
+    @keyframes sparkleFloat {
+      0% { transform: translateY(0px) scale(0.85); opacity: 0.35; }
+      50% { transform: translateY(-5px) scale(1.15); opacity: 0.8; }
+      100% { transform: translateY(0px) scale(0.85); opacity: 0.35; }
+    }
+
     .editorial-header {
       position: absolute;
-      top: 30px;
-      right: 34px;
-      left: 34px;
+      top: 24px;
+      right: 32px;
+      left: 32px;
       z-index: 8;
       display: flex;
       align-items: flex-start;
@@ -1193,44 +1225,47 @@
     }
 
     .editorial-identity strong {
-      font-family: var(--serif);
-      font-size: clamp(1.2rem, 1.8vw, 1.7rem);
-      font-weight: 400;
-      letter-spacing: -0.03em;
-      line-height: 1;
+      font-family: var(--mono);
+      font-size: clamp(1.1rem, 1.5vw, 1.35rem);
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      line-height: 1.1;
+      color: #0F172A;
     }
 
     .editorial-identity span,
     .editorial-index span {
-      color: var(--ink-soft);
-      font-size: 0.58rem;
-      font-weight: 500;
-      letter-spacing: 0.15em;
+      color: #64748B;
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
       line-height: 1.5;
       text-transform: uppercase;
       transition: color 520ms var(--ease-out);
     }
 
     .browse-ui {
-      right: 34px;
-      bottom: 26px;
-      left: 34px;
+      right: 32px;
+      bottom: 22px;
+      left: 32px;
       width: auto;
-      grid-template-columns: minmax(240px, 1fr) auto minmax(240px, 1fr);
-      gap: 26px;
+      grid-template-columns: minmax(220px, 1fr) auto minmax(220px, 1fr);
+      gap: 24px;
       transform: none;
     }
 
     .selection {
       display: grid;
-      grid-template-columns: 44px minmax(0, 1fr);
+      grid-template-columns: 38px minmax(0, 1fr);
       align-items: start;
-      gap: 13px;
+      gap: 12px;
     }
 
     .counter {
-      padding-top: 7px;
-      color: var(--ink-soft);
+      padding-top: 6px;
+      color: #64748B;
+      font-weight: 700;
+      font-size: 0.72rem;
       font-variant-numeric: tabular-nums;
       transition: color 520ms var(--ease-out);
     }
@@ -1239,22 +1274,24 @@
     .detail-title,
     .fallback__header h2,
     .fallback-book strong {
-      font-family: var(--serif);
+      font-family: var(--mono);
     }
 
     .selection__title {
-      font-size: clamp(2rem, 3.4vw, 3.75rem);
-      font-weight: 400;
-      letter-spacing: -0.055em;
-      line-height: 0.9;
+      font-size: clamp(1.8rem, 3.2vw, 3rem);
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      line-height: 0.95;
+      color: #0F172A;
     }
 
     .selection__note {
       display: block;
       max-width: 420px;
-      margin-top: 10px;
-      color: var(--ink-soft);
-      font-size: 0.75rem;
+      margin-top: 6px;
+      color: #475569;
+      font-size: 0.78rem;
+      font-weight: 500;
       letter-spacing: 0.01em;
       line-height: 1.45;
       transition: color 520ms var(--ease-out);
@@ -1263,7 +1300,9 @@
     .browse-actions {
       align-self: end;
       padding-bottom: 4px;
-      gap: 4px;
+      gap: 6px;
+      display: flex;
+      align-items: center;
     }
 
     .round-button,
@@ -1273,65 +1312,125 @@
     }
 
     .round-button {
-      width: 40px;
-      height: 40px;
+      display: grid;
+      width: 38px;
+      height: 38px;
+      border: 1px solid rgba(15, 23, 42, 0.12);
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.85);
+      color: #1E293B;
+      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.05);
+      backdrop-filter: blur(8px);
+      place-items: center;
+      transition: all 180ms ease;
+    }
+
+    .round-button:hover {
+      background: #FFFFFF;
+      border-color: rgba(15, 23, 42, 0.25);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 10px rgba(15, 23, 42, 0.08);
     }
 
     .text-button {
-      min-height: 40px;
-      padding: 0 18px;
-      border: 1px solid color-mix(in srgb, var(--ink) 42%, transparent);
+      min-height: 38px;
+      padding: 0 20px;
+      border: 1px solid rgba(59, 130, 246, 0.3);
       border-radius: 999px;
+      background: rgba(255, 255, 255, 0.9);
+      color: #1D4ED8;
+      font-weight: 700;
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.08);
+      backdrop-filter: blur(8px);
+      transition: all 180ms ease;
     }
 
     .text-button:hover {
-      color: var(--paper);
-      border-color: var(--ink);
-      background: var(--ink);
+      color: #FFFFFF;
+      border-color: #2563EB;
+      background: #2563EB;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
     }
 
     .index-nav {
       align-self: end;
-      gap: 10px;
+      gap: 8px;
       padding-bottom: 7px;
     }
 
     .markers {
-      gap: 5px;
+      gap: 6px;
     }
 
     .marker {
-      width: 27px;
+      position: relative;
+      width: 24px;
       height: 24px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      cursor: pointer;
     }
 
     .marker::before {
-      width: 17px;
-      height: 1px;
-      border-radius: 0;
-      background: color-mix(in srgb, var(--ink) 35%, transparent);
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: rgba(15, 23, 42, 0.2);
+      content: "";
+      transform: translate(-50%, -50%);
+      transition: all 220ms ease;
+    }
+
+    .marker:hover::before {
+      background: rgba(15, 23, 42, 0.5);
+      transform: translate(-50%, -50%) scale(1.2);
     }
 
     .marker[aria-current="true"]::before {
-      width: 27px;
-      height: 2px;
-      border-radius: 0;
-      background: var(--ink);
+      width: 18px;
+      height: 6px;
+      border-radius: 999px;
+      background: #2563EB;
     }
 
     .microcopy {
       display: block;
-      font-size: 0.53rem;
-      letter-spacing: 0.14em;
+      font-size: 0.54rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      color: #64748B;
+      text-transform: uppercase;
       transition: color 520ms var(--ease-out);
     }
 
     .detail-panel {
+      position: absolute;
       top: 50%;
-      right: clamp(34px, 5vw, 78px);
-      width: min(34vw, 460px);
-      max-height: 74vh;
-      color: var(--ink);
+      right: clamp(24px, 4vw, 56px);
+      bottom: auto;
+      left: auto;
+      width: min(36vw, 440px);
+      max-height: 80vh;
+      padding: 28px;
+      border: 1px solid rgba(255, 255, 255, 0.85);
+      border-radius: 24px;
+      background: rgba(255, 255, 255, 0.92);
+      box-shadow: 0 20px 40px -10px rgba(15, 23, 42, 0.1), 0 0 0 1px rgba(15, 23, 42, 0.06);
+      transform: translateY(calc(-50% + 18px));
+      backdrop-filter: blur(16px);
+      color: #0F172A;
+      transition:
+        color 520ms var(--ease-out),
+        opacity 620ms var(--ease-out),
+        transform 620ms var(--ease-out);
     }
 
     .mode-detail .browse-ui {
@@ -1345,48 +1444,63 @@
 
     .detail-title {
       max-width: calc(100% - 28px);
-      font-size: clamp(3.5rem, 6.3vw, 6.7rem);
-      font-weight: 400;
-      letter-spacing: -0.065em;
-      line-height: 0.82;
+      font-size: clamp(2.4rem, 4.5vw, 3.8rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      line-height: 0.95;
+      color: #0F172A;
     }
 
     .detail-deck {
       max-width: 38em;
-      margin-top: 24px;
-      font-family: var(--serif);
-      font-size: clamp(1.05rem, 1.35vw, 1.3rem);
-      line-height: 1.5;
+      margin-top: 14px;
+      font-family: var(--mono);
+      font-size: 0.88rem;
+      line-height: 1.55;
+      color: #334155;
     }
 
     .meta-list {
-      margin-top: 28px;
-      border-top-color: color-mix(in srgb, var(--ink) 26%, transparent);
+      margin-top: 24px;
+      border-top-color: rgba(15, 23, 42, 0.1);
     }
 
     .meta-list dd {
       font-size: 0.75rem;
+      font-weight: 600;
+      color: #0F172A;
       line-height: 1.45;
     }
 
     .detail-controls {
       align-items: end;
-      margin-top: 24px;
+      margin-top: 20px;
     }
 
     .reset-button {
       min-height: 32px;
       padding: 0;
       border: 0;
-      border-bottom: 1px solid color-mix(in srgb, var(--ink) 52%, transparent);
+      border-bottom: 1px solid rgba(15, 23, 42, 0.3);
       border-radius: 0;
+      background: transparent;
+      color: #475569;
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+    .reset-button:hover {
+      color: #0F172A;
+      border-color: #0F172A;
     }
 
     .detail-buttons {
       display: flex;
       flex: 0 0 auto;
       align-items: center;
-      gap: 18px;
+      gap: 16px;
       margin-left: auto;
     }
 
@@ -1396,30 +1510,25 @@
 
     .page-navigation {
       display: grid;
-      grid-template-columns: 40px minmax(0, 1fr) 40px;
+      grid-template-columns: 38px minmax(0, 1fr) 38px;
       align-items: center;
       gap: 12px;
-      margin-top: 22px;
-      padding-top: 18px;
-      border-top: 1px solid color-mix(in srgb, var(--ink) 26%, transparent);
+      margin-top: 18px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(15, 23, 42, 0.1);
     }
 
     .page-button {
       display: grid;
-      width: 40px;
-      height: 40px;
+      width: 38px;
+      height: 38px;
       padding: 0;
-      border: 1px solid color-mix(in srgb, var(--ink) 42%, transparent);
+      border: 1px solid rgba(15, 23, 42, 0.15);
       border-radius: 50%;
-      color: var(--ink);
-      background: transparent;
+      color: #1E293B;
+      background: rgba(255, 255, 255, 0.9);
       place-items: center;
-      transition:
-        color 180ms ease,
-        background-color 180ms ease,
-        border-color 180ms ease,
-        opacity 180ms ease,
-        transform 180ms ease;
+      transition: all 180ms ease;
     }
 
     .page-button svg {
@@ -1428,12 +1537,13 @@
       stroke: currentColor;
       stroke-linecap: round;
       stroke-linejoin: round;
-      stroke-width: 1.35;
+      stroke-width: 1.5;
     }
 
     .page-button:not(:disabled):hover {
-      color: var(--paper);
-      background: var(--ink);
+      color: #FFFFFF;
+      background: #2563EB;
+      border-color: #2563EB;
       transform: translateY(-1px);
     }
 
@@ -1443,7 +1553,7 @@
     }
 
     .page-button:focus-visible {
-      outline: 2px solid var(--accent);
+      outline: 2px solid #2563EB;
       outline-offset: 3px;
     }
 
@@ -1456,36 +1566,38 @@
 
     .page-status strong {
       overflow: hidden;
-      font-family: var(--serif);
-      font-size: 0.92rem;
-      font-weight: 400;
+      font-family: var(--mono);
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: #0F172A;
       line-height: 1.2;
       text-overflow: ellipsis;
       white-space: nowrap;
     }
 
     .page-status span {
-      color: var(--ink-soft);
-      font-size: 0.53rem;
-      letter-spacing: 0.14em;
+      color: #64748B;
+      font-size: 0.58rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
     }
 
     .close-button {
-      top: 7px;
-      right: 7px;
-      width: 42px;
-      height: 42px;
-      border: 1px solid color-mix(in srgb, var(--ink) 38%, transparent);
-    }
-
-    .close-button:focus-visible {
-      outline-offset: 3px;
+      top: 14px;
+      right: 14px;
+      width: 36px;
+      height: 36px;
+      border: 1px solid rgba(15, 23, 42, 0.12);
+      background: rgba(255, 255, 255, 0.8);
+      border-radius: 50%;
+      cursor: pointer;
     }
 
     .close-button:hover {
-      color: var(--paper);
-      background: var(--ink);
+      color: #FFFFFF;
+      background: #0F172A;
+      border-color: #0F172A;
     }
 
     .static-fallback,
@@ -1496,15 +1608,15 @@
 
     @media (max-width: 880px) {
       .editorial-header {
-        top: 22px;
-        right: 22px;
-        left: 22px;
+        top: 18px;
+        right: 18px;
+        left: 18px;
       }
 
       .browse-ui {
-        right: 20px;
-        bottom: 18px;
-        left: 20px;
+        right: 18px;
+        bottom: 16px;
+        left: 18px;
         width: auto;
         grid-template-columns: minmax(0, 1fr) auto;
         gap: 10px 16px;
@@ -1516,7 +1628,7 @@
       }
 
       .selection__title {
-        font-size: clamp(2rem, 9vw, 3.5rem);
+        font-size: clamp(1.8rem, 8vw, 2.6rem);
       }
 
       .selection__note {
@@ -1533,24 +1645,23 @@
 
       .detail-panel {
         top: auto;
-        right: 22px;
-        bottom: 22px;
-        left: 22px;
+        right: 18px;
+        bottom: 18px;
+        left: 18px;
         width: auto;
-        max-height: 40vh;
+        max-height: 44vh;
       }
 
       .detail-title {
-        font-size: clamp(3rem, 14vw, 5rem);
+        font-size: clamp(2.4rem, 10vw, 3.4rem);
       }
 
       .detail-deck {
-        font-size: 1rem;
+        font-size: 0.84rem;
       }
     }
 
     @media (max-width: 560px) {
-
       .editorial-index span:last-child,
       .selection__note,
       .microcopy {
@@ -1558,15 +1669,15 @@
       }
 
       .editorial-identity strong {
-        font-size: 1.1rem;
+        font-size: 1.05rem;
       }
 
       .browse-ui {
-        bottom: 14px;
+        bottom: 12px;
       }
 
       .selection {
-        grid-template-columns: 34px 1fr;
+        grid-template-columns: 32px 1fr;
       }
 
       .counter {
@@ -1574,19 +1685,81 @@
       }
 
       .selection__title {
-        font-size: 2rem;
+        font-size: 1.7rem;
       }
 
       .marker {
-        width: 19px;
+        width: 18px;
       }
 
       .marker::before {
-        width: 12px;
+        width: 5px;
+        height: 5px;
       }
 
       .marker[aria-current="true"]::before {
-        width: 19px;
+        width: 14px;
+        height: 5px;
+      }
+    }
+
+    /* Subtle QuestBoard pixel atmospheric background decorations */
+    .pixel-decorations {
+      position: absolute;
+      inset: 0;
+      z-index: 5;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .pixel-item {
+      position: absolute;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0.45;
+      image-rendering: pixelated;
+      animation: pixelAtmospherePulse 7s ease-in-out infinite alternate;
+      will-change: transform, opacity;
+      filter: drop-shadow(0 1px 2px rgba(15, 23, 42, 0.05));
+    }
+
+    .pixel-item.p-dot {
+      width: 4px;
+      height: 4px;
+      background: currentColor;
+    }
+
+    .pixel-item.p-dot-sm {
+      width: 3px;
+      height: 3px;
+      background: currentColor;
+    }
+
+    .pixel-item svg {
+      display: block;
+      shape-rendering: crispEdges;
+    }
+
+    @keyframes pixelAtmospherePulse {
+      0% {
+        transform: translateY(0px) scale(1);
+        opacity: 0.3;
+      }
+      50% {
+        transform: translateY(-5px) scale(1.06);
+        opacity: 0.55;
+      }
+      100% {
+        transform: translateY(-9px) scale(1);
+        opacity: 0.35;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .pixel-item {
+        animation: none !important;
+        opacity: 0.4 !important;
       }
     }
   </style>
@@ -1602,6 +1775,53 @@
 
 <body>
   <main class="experience" id="experience">
+    <!-- Subtle QuestBoard pastel pixel atmosphere in upper background -->
+    <div class="pixel-decorations" aria-hidden="true">
+      <!-- Upper Left Region -->
+      <div class="pixel-item" style="top: 13%; left: 7%; color: #60a5fa; animation-delay: 0s;">
+        <svg width="10" height="10" viewBox="0 0 10 10"><rect x="4" y="0" width="2" height="10" fill="currentColor"/><rect x="0" y="4" width="10" height="2" fill="currentColor"/></svg>
+      </div>
+      <div class="pixel-item p-dot" style="top: 23%; left: 13%; color: #34d399; animation-delay: 1.4s;"></div>
+      <div class="pixel-item" style="top: 9%; left: 20%; color: #facc15; animation-delay: 2.7s;">
+        <svg width="12" height="12" viewBox="0 0 12 12"><rect x="5" y="0" width="2" height="12" fill="currentColor"/><rect x="0" y="5" width="12" height="2" fill="currentColor"/><rect x="3" y="3" width="6" height="6" fill="currentColor"/><rect x="4" y="4" width="4" height="4" fill="#ffffff" opacity="0.65"/></svg>
+      </div>
+      <div class="pixel-item" style="top: 28%; left: 17%; color: #c084fc; animation-delay: 3.9s;">
+        <svg width="8" height="8" viewBox="0 0 8 8"><rect x="3" y="0" width="2" height="2" fill="currentColor"/><rect x="1" y="2" width="2" height="2" fill="currentColor"/><rect x="5" y="2" width="2" height="2" fill="currentColor"/><rect x="3" y="4" width="2" height="2" fill="currentColor"/></svg>
+      </div>
+
+      <!-- Upper Center-Left Region -->
+      <div class="pixel-item" style="top: 15%; left: 31%; color: #fb923c; animation-delay: 0.9s;">
+        <svg width="8" height="8" viewBox="0 0 8 8"><rect x="3" y="1" width="2" height="6" fill="currentColor"/><rect x="1" y="3" width="6" height="2" fill="currentColor"/></svg>
+      </div>
+      <div class="pixel-item" style="top: 24%; left: 37%; color: #60a5fa; animation-delay: 4.3s;">
+        <svg width="6" height="6" viewBox="0 0 6 6"><rect x="2" y="0" width="2" height="6" fill="currentColor"/><rect x="0" y="2" width="6" height="2" fill="currentColor"/></svg>
+      </div>
+      <div class="pixel-item p-dot-sm" style="top: 11%; left: 44%; color: #facc15; animation-delay: 2.1s;"></div>
+
+      <!-- Upper Center-Right Region -->
+      <div class="pixel-item" style="top: 14%; left: 57%; color: #34d399; animation-delay: 3.3s;">
+        <svg width="12" height="12" viewBox="0 0 12 12"><rect x="5" y="0" width="2" height="12" fill="currentColor"/><rect x="0" y="5" width="12" height="2" fill="currentColor"/><rect x="3" y="3" width="6" height="6" fill="currentColor"/><rect x="4" y="4" width="4" height="4" fill="#ffffff" opacity="0.65"/></svg>
+      </div>
+      <div class="pixel-item" style="top: 22%; left: 64%; color: #c084fc; animation-delay: 2.4s;">
+        <svg width="8" height="8" viewBox="0 0 8 8"><rect x="3" y="1" width="2" height="6" fill="currentColor"/><rect x="1" y="3" width="6" height="2" fill="currentColor"/></svg>
+      </div>
+      <div class="pixel-item" style="top: 10%; left: 70%; color: #fb923c; animation-delay: 1.7s;">
+        <svg width="8" height="8" viewBox="0 0 8 8"><rect x="3" y="0" width="2" height="2" fill="currentColor"/><rect x="1" y="2" width="2" height="2" fill="currentColor"/><rect x="5" y="2" width="2" height="2" fill="currentColor"/><rect x="3" y="4" width="2" height="2" fill="currentColor"/></svg>
+      </div>
+
+      <!-- Upper Right Region -->
+      <div class="pixel-item" style="top: 17%; left: 79%; color: #facc15; animation-delay: 0.6s;">
+        <svg width="10" height="10" viewBox="0 0 10 10"><rect x="4" y="0" width="2" height="10" fill="currentColor"/><rect x="0" y="4" width="10" height="2" fill="currentColor"/></svg>
+      </div>
+      <div class="pixel-item p-dot" style="top: 12%; left: 85%; color: #60a5fa; animation-delay: 3.1s;"></div>
+      <div class="pixel-item" style="top: 26%; left: 90%; color: #34d399; animation-delay: 4.8s;">
+        <svg width="12" height="12" viewBox="0 0 12 12"><rect x="5" y="0" width="2" height="12" fill="currentColor"/><rect x="0" y="5" width="12" height="2" fill="currentColor"/><rect x="3" y="3" width="6" height="6" fill="currentColor"/><rect x="4" y="4" width="4" height="4" fill="#ffffff" opacity="0.65"/></svg>
+      </div>
+      <div class="pixel-item" style="top: 31%; left: 94%; color: #c084fc; animation-delay: 1.3s;">
+        <svg width="6" height="6" viewBox="0 0 6 6"><rect x="2" y="0" width="2" height="6" fill="currentColor"/><rect x="0" y="2" width="6" height="2" fill="currentColor"/></svg>
+      </div>
+    </div>
+
     <div class="scene-shell">
       <canvas id="scene" aria-hidden="true"></canvas>
     </div>
@@ -1613,7 +1833,7 @@
       </div>
       <div class="editorial-index">
         <span>Curriculum Library</span>
-        <span id="palette-label">Midnight navy · cyan · bone</span>
+        <span id="palette-label">Pastel mint · emerald · turquoise</span>
       </div>
     </header>
 
@@ -1765,20 +1985,23 @@
         theme: "Python · clean syntax & algorithm mastery",
         motif: "Nested brackets",
         motifKey: "brackets",
-        paletteLabel: "Emerald pine · turquoise · mint",
-        color: "#064e3b",
-        foil: "#2dd4bf",
+        paletteLabel: "Pastel mint · emerald · turquoise",
+        color: "#0d6951",
+        foil: "#14b8a6",
+        textColor: "#022c22",
+        textStroke: "#011a14",
+        textShadow: "rgba(0, 0, 0, 0.65)",
         palette: {
-          paper: "#042f2e",
-          paperDeep: "#02201f",
-          paperPale: "#ccfbf1",
-          ink: "#f0fdfa",
-          inkSoft: "#5eead4",
-          wall: "#042423",
-          shelf: "#0d3b37",
-          shelfDark: "#062320",
-          light: "#99f6e4",
-          fill: "#14b8a6"
+          paper: "#E8F8F3",
+          paperDeep: "#C8E9DF",
+          paperPale: "#F4FBF8",
+          ink: "#0F172A",
+          inkSoft: "#334155",
+          wall: "#E2F4EE",
+          shelf: "#88BDB3",
+          shelfDark: "#689E94",
+          light: "#FFFFFF",
+          fill: "#CCFBF1"
         },
         width: 1.05,
         height: 1.58,
@@ -1798,20 +2021,23 @@
         theme: "JavaScript · dynamic runtimes & async mastery",
         motif: "Interlaced paths",
         motifKey: "paths",
-        paletteLabel: "Deep topaz · golden yellow · cream",
-        color: "#422006",
-        foil: "#facc15",
+        paletteLabel: "Pastel amber · golden sand · cream",
+        color: "#854d0e",
+        foil: "#d97706",
+        textColor: "#301804",
+        textStroke: "#1a0d02",
+        textShadow: "rgba(0, 0, 0, 0.65)",
         palette: {
-          paper: "#2e1605",
-          paperDeep: "#1a0d03",
-          paperPale: "#fef3c7",
-          ink: "#fefce8",
-          inkSoft: "#fde047",
-          wall: "#241304",
-          shelf: "#3b1e07",
-          shelfDark: "#211003",
-          light: "#fef08a",
-          fill: "#eab308"
+          paper: "#FEF7EE",
+          paperDeep: "#FCE6CD",
+          paperPale: "#FFFDF8",
+          ink: "#0F172A",
+          inkSoft: "#475569",
+          wall: "#FBF1E4",
+          shelf: "#C7A884",
+          shelfDark: "#AA8B67",
+          light: "#FFFFFF",
+          fill: "#FEF3C7"
         },
         width: 1.02,
         height: 1.52,
@@ -1831,20 +2057,23 @@
         theme: "Java · resilient OOP & collections architecture",
         motif: "Suspended orbits",
         motifKey: "orbits",
-        paletteLabel: "Burnt sienna · coral orange · apricot",
-        color: "#431407",
-        foil: "#fb923c",
+        paletteLabel: "Pastel coral · rosewood · blush",
+        color: "#9A3412",
+        foil: "#ea580c",
+        textColor: "#3b1205",
+        textStroke: "#200902",
+        textShadow: "rgba(0, 0, 0, 0.65)",
         palette: {
-          paper: "#2c0e05",
-          paperDeep: "#1c0903",
-          paperPale: "#ffedd5",
-          ink: "#fff7ed",
-          inkSoft: "#fdba74",
-          wall: "#240b04",
-          shelf: "#3e1307",
-          shelfDark: "#230b03",
-          light: "#fed7aa",
-          fill: "#f97316"
+          paper: "#FFF1F2",
+          paperDeep: "#FED7AA",
+          paperPale: "#FFF8F8",
+          ink: "#0F172A",
+          inkSoft: "#475569",
+          wall: "#FCEAE8",
+          shelf: "#C89B8F",
+          shelfDark: "#AA7D71",
+          light: "#FFFFFF",
+          fill: "#FFE4E6"
         },
         width: 1.10,
         height: 1.62,
@@ -1864,20 +2093,23 @@
         theme: "C++ · memory control & STL high performance",
         motif: "Directional caret",
         motifKey: "caret",
-        paletteLabel: "Royal sapphire · electric blue · ice",
-        color: "#0f172a",
-        foil: "#38bdf8",
+        paletteLabel: "Pastel sky · royal sapphire · lavender",
+        color: "#1E3A8A",
+        foil: "#0284C7",
+        textColor: "#051329",
+        textStroke: "#020914",
+        textShadow: "rgba(0, 0, 0, 0.65)",
         palette: {
-          paper: "#091428",
-          paperDeep: "#040b17",
-          paperPale: "#e0f2fe",
-          ink: "#f0f9ff",
-          inkSoft: "#7dd3fc",
-          wall: "#071020",
-          shelf: "#102347",
-          shelfDark: "#081329",
-          light: "#bae6fd",
-          fill: "#3b82f6"
+          paper: "#EFF6FF",
+          paperDeep: "#DBEAFE",
+          paperPale: "#F8FAFC",
+          ink: "#0F172A",
+          inkSoft: "#334155",
+          wall: "#E8EFFC",
+          shelf: "#93B4D8",
+          shelfDark: "#7294B8",
+          light: "#FFFFFF",
+          fill: "#E0F2FE"
         },
         width: 1.08,
         height: 1.60,
@@ -2384,11 +2616,34 @@
       ctx.letterSpacing = "4px";
       ctx.fillText(`CODING ACADEMY  /  ${book.roman}`, canvasTexture.width / 2, 92);
 
-      const titleSize = book.title.length > 10 ? 72 : 88;
-      ctx.font = `400 ${titleSize}px "Iowan Old Style", Baskerville, Georgia, serif`;
+      const titleSize = book.title.length > 8 ? 82 : 96;
+      
+      // Letterpress deboss & shadow effect
+      ctx.save();
+      ctx.shadowColor = book.textShadow || "rgba(0, 0, 0, 0.75)";
+      ctx.shadowBlur = 8;
+      ctx.shadowOffsetX = 0;
+      ctx.shadowOffsetY = 4;
+      
+      ctx.font = `800 ${titleSize}px "Cinzel", "Inter", -apple-system, sans-serif`;
+      ctx.letterSpacing = "2px";
+      
+      // Crisp dark stroke outline for maximum definition against pastel cloth
+      ctx.strokeStyle = book.textStroke || "#050505";
+      ctx.lineWidth = 4;
+      ctx.strokeText(book.title, canvasTexture.width / 2, canvasTexture.height * 0.72);
+      
+      // Deep harmonious ink fill
+      ctx.fillStyle = book.textColor || book.foil;
       ctx.fillText(book.title, canvasTexture.width / 2, canvasTexture.height * 0.72);
-      ctx.font = '500 16px Inter, "Helvetica Neue", Arial, sans-serif';
+      ctx.restore();
+
+      ctx.font = '600 16px Inter, "Helvetica Neue", Arial, sans-serif';
+      ctx.letterSpacing = "2px";
+      ctx.fillStyle = book.textColor || book.foil;
+      ctx.globalAlpha = 0.9;
       ctx.fillText(book.discipline.toUpperCase(), canvasTexture.width / 2, canvasTexture.height * 0.79);
+      ctx.globalAlpha = 1;
 
       return configureCanvasTexture(new THREE.CanvasTexture(canvasTexture));
     }
@@ -2415,9 +2670,14 @@
       ctx.letterSpacing = "4px";
       ctx.fillText(`CODING ACADEMY  /  ${book.roman}`, foilCanvas.width / 2, 92);
 
-      const titleSize = book.title.length > 10 ? 72 : 88;
-      ctx.font = `400 ${titleSize}px "Iowan Old Style", Baskerville, Georgia, serif`;
-      ctx.fillText(book.title, foilCanvas.width / 2, foilCanvas.height * 0.72);
+      // Elegant accent line under title in foil
+      ctx.lineWidth = 2;
+      const titleAccentWidth = book.title.length > 8 ? 240 : 160;
+      ctx.beginPath();
+      ctx.moveTo((foilCanvas.width - titleAccentWidth) / 2, foilCanvas.height * 0.755);
+      ctx.lineTo((foilCanvas.width + titleAccentWidth) / 2, foilCanvas.height * 0.755);
+      ctx.stroke();
+
       ctx.font = '500 16px Inter, "Helvetica Neue", Arial, sans-serif';
       ctx.fillText(book.discipline.toUpperCase(), foilCanvas.width / 2, foilCanvas.height * 0.79);
 
@@ -3029,6 +3289,28 @@
       ctx.fillStyle = bottomShade;
       ctx.fillRect(0, 0, spineCanvas.width, spineCanvas.height);
 
+      // Render spine title in deep ink with stroke and shadow
+      ctx.save();
+      ctx.translate(spineCanvas.width * 0.5, spineCanvas.height * 0.5);
+      ctx.rotate(Math.PI / 2);
+      const spineTitleSize = book.title.length > 8 ? 62 : 72;
+      ctx.font = `800 ${spineTitleSize}px "Cinzel", "Inter", -apple-system, sans-serif`;
+      ctx.letterSpacing = "1px";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+
+      ctx.shadowColor = book.textShadow || "rgba(0, 0, 0, 0.75)";
+      ctx.shadowBlur = 6;
+      ctx.shadowOffsetY = 3;
+
+      ctx.strokeStyle = book.textStroke || "#050505";
+      ctx.lineWidth = 3.5;
+      ctx.strokeText(book.title, 0, 0);
+
+      ctx.fillStyle = book.textColor || book.foil;
+      ctx.fillText(book.title, 0, 0);
+      ctx.restore();
+
       return configureCanvasTexture(
         new THREE.CanvasTexture(spineCanvas),
         { anisotropy: 16 }
@@ -3056,9 +3338,12 @@
       ctx.save();
       ctx.translate(foilCanvas.width * 0.5, foilCanvas.height * 0.5);
       ctx.rotate(Math.PI / 2);
-      ctx.font = `400 ${book.title.length > 10 ? 58 : 68}px "Iowan Old Style", Baskerville, Georgia, serif`;
-      ctx.letterSpacing = "0px";
-      ctx.fillText(book.title, 0, 0);
+      ctx.lineWidth = 2;
+      const spineAccentWidth = book.title.length > 8 ? 200 : 140;
+      ctx.beginPath();
+      ctx.moveTo(-spineAccentWidth / 2, 44);
+      ctx.lineTo(spineAccentWidth / 2, 44);
+      ctx.stroke();
       ctx.restore();
 
       ctx.beginPath();
@@ -4006,9 +4291,9 @@
 
     function addRoom() {
       const floor = createMesh(shared.plane, new THREE.MeshStandardMaterial({
-        color: 0xd8c8aa,
-        roughness: 0.92,
-        metalness: 0
+        color: 0xC8E9DF,
+        roughness: 0.88,
+        metalness: 0.02
       }), "paper-floor", false, true);
       floor.scale.set(30, 20, 1);
       floor.rotation.x = -Math.PI * 0.5;
@@ -4016,8 +4301,8 @@
       scene.add(floor);
 
       const back = createMesh(shared.plane, new THREE.MeshStandardMaterial({
-        color: 0xe9dfcb,
-        roughness: 1,
+        color: 0xE8F8F3,
+        roughness: 0.95,
         metalness: 0
       }), "paper-backdrop", false, true);
       back.scale.set(28, 14, 1);
@@ -4047,10 +4332,10 @@
       });
 
       const shadowStrip = createMesh(shared.plane, new THREE.MeshBasicMaterial({
-        color: 0x2f1d13,
+        color: 0x335550,
         alphaMap: makeContactShadowTexture(),
         transparent: true,
-        opacity: 0.22,
+        opacity: 0.14,
         depthWrite: false
       }), "shelf-contact-shadow", false, false);
       shadowStrip.scale.set(16, 0.85, 1);
@@ -4066,10 +4351,10 @@
     }
 
     function addLights() {
-      roomLights.hemisphere = new THREE.HemisphereLight(0xfff8e8, 0x5b4030, 0.56);
+      roomLights.hemisphere = new THREE.HemisphereLight(0xffffff, 0xb0d5cb, 0.95);
       scene.add(roomLights.hemisphere);
 
-      const key = new THREE.DirectionalLight(0xffe8c2, 1.42);
+      const key = new THREE.DirectionalLight(0xffffff, 1.8);
       key.name = "shadow-key";
       key.position.set(-4.6, 7.4, 5.8);
       key.castShadow = true;
@@ -4086,41 +4371,41 @@
       scene.add(key);
       roomLights.key = key;
 
-      const softKey = new THREE.RectAreaLight(0xffe8c2, 5.4, 4.8, 5.6);
+      const softKey = new THREE.RectAreaLight(0xffffff, 4.8, 4.8, 5.6);
       softKey.name = "cloth-softbox";
       softKey.position.set(-3.2, 5.5, 4.6);
       softKey.lookAt(0, 1.45, 0);
       scene.add(softKey);
       roomLights.softKey = softKey;
 
-      const fill = new THREE.DirectionalLight(0xd8e3e7, 0.3);
+      const fill = new THREE.DirectionalLight(0xe0f2fe, 0.65);
       fill.name = "cool-fill";
       fill.position.set(5.5, 3.6, 4.2);
       scene.add(fill);
       roomLights.fill = fill;
 
-      const rim = new THREE.RectAreaLight(0xd5a45e, 3.45, 1.6, 4.8);
+      const rim = new THREE.RectAreaLight(0xffffff, 3.2, 1.6, 4.8);
       rim.name = "foil-rake";
       rim.position.set(3.8, 3.6, -2.1);
       rim.lookAt(-0.2, 1.5, 0);
       scene.add(rim);
       roomLights.rim = rim;
 
-      const backFill = new THREE.RectAreaLight(0xd8e3e7, 2.7, 3.8, 4.8);
+      const backFill = new THREE.RectAreaLight(0xe0f2fe, 2.5, 3.8, 4.8);
       backFill.name = "back-cover-softbox";
       backFill.position.set(-1.8, 2.9, -4.5);
       backFill.lookAt(-0.1, 1.45, 0);
       scene.add(backFill);
       roomLights.backFill = backFill;
 
-      const spineRake = new THREE.RectAreaLight(0xffe8c2, 1.9, 0.9, 4.6);
+      const spineRake = new THREE.RectAreaLight(0xffffff, 1.8, 0.9, 4.6);
       spineRake.name = "spine-rake";
       spineRake.position.set(-4.6, 3.2, 1.1);
       spineRake.lookAt(-0.55, 1.5, 0);
       scene.add(spineRake);
       roomLights.spineRake = spineRake;
 
-      const pageRake = new THREE.RectAreaLight(0xfff7e7, 2.15, 1.15, 3.8);
+      const pageRake = new THREE.RectAreaLight(0xffffff, 2.0, 1.15, 3.8);
       pageRake.name = "page-edge-rake";
       pageRake.position.set(4.2, 4.8, 3.1);
       pageRake.lookAt(0.65, 1.55, 0);
@@ -4140,13 +4425,14 @@
       const geometry = new THREE.BufferGeometry();
       geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
       const material = new THREE.PointsMaterial({
-        color: 0xc3a97b,
-        size: 0.014,
+        color: 0x5aa89b,
+        size: 0.016,
         transparent: true,
-        opacity: 0.3,
+        opacity: 0.45,
         depthWrite: false
       });
       const dust = new THREE.Points(geometry, material);
+      dust.name = "paper-dust";
       dust.name = "paper-dust";
       dust.userData.isDust = true;
       scene.add(dust);
@@ -5755,11 +6041,11 @@
       renderer.setClearColor(0x000000, 0);
 
       scene = new THREE.Scene();
-      scene.fog = new THREE.FogExp2(0xe9dfcb, 0.027);
+      scene.fog = new THREE.FogExp2(0xe8f8f3, 0.02);
       const pmremGenerator = new THREE.PMREMGenerator(renderer);
       environmentTarget = pmremGenerator.fromScene(new RoomEnvironment(), 0.04);
       scene.environment = environmentTarget.texture;
-      scene.environmentIntensity = 0.72;
+      scene.environmentIntensity = 0.85;
       pmremGenerator.dispose();
 
       camera = new THREE.PerspectiveCamera(32, 1, 0.1, 60);

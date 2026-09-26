@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { User, Mail, Lock, AlertCircle } from 'lucide-react';
 import { AnimatedTopDock } from '../../shaders/animated-top-dock/AnimatedTopDock';
+import { QuestBoardLogo } from '../../components/QuestBoardLogo';
 import '../../shaders/threeui.css';
 
 export function RegisterPage() {
@@ -57,13 +58,8 @@ export function RegisterPage() {
       {/* 3. Auth Form Card */}
       <div className="w-full max-w-md p-6 sm:p-8 bg-white/95 backdrop-blur-xl border border-slate-200/80 rounded-2xl shadow-xl relative z-10 animate-fade-in">
         <div className="text-center mb-8">
-          <Link to="/" className="inline-flex items-center gap-2 mb-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white font-bold text-xl shadow-md shadow-blue-500/20">
-              ⚔️
-            </div>
-            <span className="font-extrabold text-2xl tracking-tight text-slate-900">
-              Quest<span className="text-blue-600">Board</span>
-            </span>
+          <Link to="/" className="inline-flex items-center justify-center mb-4 transition-transform hover:scale-105 select-none">
+            <QuestBoardLogo variant="full" size="lg" showGlow />
           </Link>
           <h1 className="text-2xl font-bold text-slate-900">Forge Your Character</h1>
           <p className="text-xs text-slate-500 mt-1">

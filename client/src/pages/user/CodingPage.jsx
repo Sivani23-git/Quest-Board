@@ -377,11 +377,11 @@ export function CodingPage() {
         </div>
 
         <div
-          className="w-full rounded-3xl overflow-hidden border border-slate-200 bg-[#0A0F1E] shadow-xl shadow-slate-300/40 relative"
+          className="w-full rounded-3xl overflow-hidden border border-teal-200/80 bg-gradient-to-b from-[#E8F8F3] via-[#DDF4EF] to-[#C8E9DF] shadow-md shadow-teal-900/5 relative"
           style={{ width: '100%', height: '640px', minHeight: '600px' }}
         >
           <CompleteShelfLandingPage
-            headingFont="iowan-old-style"
+            headingFont="inter"
             bodyFont="inter"
             headingWeight="400"
             bodyWeight="400"

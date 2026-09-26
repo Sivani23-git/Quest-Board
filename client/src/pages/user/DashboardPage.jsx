@@ -165,7 +165,7 @@ export function DashboardPage() {
       {/* FULL-WIDTH CONTINUOUS PIXEL-ART RPG WORLD BACKGROUND LAYER                 */}
       {/* ========================================================================= */}
       <div
-        className="fixed top-16 left-0 lg:left-64 right-0 bottom-0 pointer-events-none overflow-hidden select-none z-0"
+        className="absolute -inset-4 sm:-inset-6 lg:-inset-8 pointer-events-none overflow-hidden select-none z-0 min-h-full"
         style={{
           background:
             'linear-gradient(180deg, #E0F2FE 0%, #E8F5FE 15%, #EDFAF5 35%, #F0FDF4 65%, #FEFCE8 90%, #FEF9C3 100%)',

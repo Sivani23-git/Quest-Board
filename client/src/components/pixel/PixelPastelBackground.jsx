@@ -62,7 +62,7 @@ const SPRITE_KEYS = Object.keys(SPRITE_PATTERNS);
 export function PixelPastelBackground({
   animation = 'interactive',
   density = 'normal',
-  pixelScale = 2,
+  pixelScale = 1.5,
   backgroundColor = '#FFFFFF',
   speed = 1,
   className = '',
@@ -77,43 +77,52 @@ export function PixelPastelBackground({
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
+    ctx.imageSmoothingEnabled = false;
 
-    const getCanvasDimensions = () => {
-      const isLg = window.innerWidth >= 1024;
-      const w = window.innerWidth - (isLg ? 256 : 0);
-      const h = window.innerHeight - 64;
-      return { width: Math.max(300, w), height: Math.max(300, h) };
-    };
+    let width = 0;
+    let height = 0;
 
-    let { width, height } = getCanvasDimensions();
-    canvas.width = width;
-    canvas.height = height;
-
-    const handleResize = () => {
+    const updateDimensions = () => {
       if (!canvas) return;
-      const dims = getCanvasDimensions();
-      width = canvas.width = dims.width;
-      height = canvas.height = dims.height;
+      const parent = canvas.parentElement;
+      const isLg = window.innerWidth >= 1024;
+      const isSm = window.innerWidth >= 640;
+      const pad = isLg ? 64 : isSm ? 48 : 32;
+
+      const w = parent ? parent.offsetWidth + pad : window.innerWidth;
+      const h = parent ? Math.max(parent.offsetHeight + pad, window.innerHeight) : window.innerHeight;
+
+      width = canvas.width = Math.max(300, w);
+      height = canvas.height = Math.max(300, h);
     };
 
-    window.addEventListener('resize', handleResize);
+    updateDimensions();
+
+    const resizeObserver = new ResizeObserver(() => {
+      updateDimensions();
+    });
+
+    if (canvas.parentElement) {
+      resizeObserver.observe(canvas.parentElement);
+    }
+    window.addEventListener('resize', updateDimensions);
 
     // Particle Count based on density and full main content dimensions
     const densityMap = { low: 35, normal: 70, high: 110 };
     const baseCount = densityMap[density] || 70;
-    const count = Math.max(30, Math.floor((width * height) / (1920 * 1080) * baseCount));
+    const count = Math.max(30, Math.floor((Math.max(width, 1200) * Math.max(height, 800)) / (1920 * 1080) * baseCount));
 
     const particles = Array.from({ length: count }, () => {
       const type = SPRITE_KEYS[Math.floor(Math.random() * SPRITE_KEYS.length)];
       return {
-        x: Math.random() * width,
-        y: Math.random() * height,
+        x: Math.random() * (width || window.innerWidth),
+        y: Math.random() * (height || window.innerHeight),
         vx: (Math.random() - 0.5) * 0.4 * speed,
         vy: -(Math.random() * 0.5 + 0.25) * speed,
         type,
         color: PASTEL_COLORS[Math.floor(Math.random() * PASTEL_COLORS.length)],
-        scale: Math.max(1, Math.round(pixelScale * (0.85 + Math.random() * 0.45))),
-        alpha: 0.4 + Math.random() * 0.4,
+        scale: Math.max(1, pixelScale),
+        alpha: 0.65 + Math.random() * 0.20,
         floatOffset: Math.random() * Math.PI * 2,
       };
     });
@@ -187,7 +196,12 @@ export function PixelPastelBackground({
           for (let r = 0; r < spriteH; r++) {
             for (let c = 0; c < spriteW; c++) {
               if (sprite[r][c] === 1) {
-                ctx.fillRect(startX + c * pScale, startY + r * pScale, pScale, pScale);
+                ctx.fillRect(
+                  Math.round(startX + c * pScale),
+                  Math.round(startY + r * pScale),
+                  Math.max(1, Math.round(pScale)),
+                  Math.max(1, Math.round(pScale))
+                );
               }
             }
           }
@@ -204,7 +218,8 @@ export function PixelPastelBackground({
       if (animFrameRef.current) {
         cancelAnimationFrame(animFrameRef.current);
       }
-      window.removeEventListener('resize', handleResize);
+      resizeObserver.disconnect();
+      window.removeEventListener('resize', updateDimensions);
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('mouseleave', handleMouseLeave);
     };
@@ -212,10 +227,10 @@ export function PixelPastelBackground({
 
   return (
     <div className={`relative w-full ${className}`}>
-      {/* Full-width & Full-height Canvas: Extends from beside sidebar to right viewport edge and below navbar */}
+      {/* Full-width & Full-height Canvas: Extends 100% across the main area */}
       <canvas
         ref={canvasRef}
-        className="fixed top-16 left-0 lg:left-64 right-0 bottom-0 pointer-events-none z-0"
+        className="absolute -inset-4 sm:-inset-6 lg:-inset-8 pointer-events-none z-0 min-h-full"
         style={{ imageRendering: 'pixelated' }}
       />
       {/* Existing Centered Trophy Room UI Content Layer */}

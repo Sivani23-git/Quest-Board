@@ -1,5 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
+import { QuestBoardLogo } from '../QuestBoardLogo';
 import {
   LayoutDashboard,
   Sword,
@@ -11,6 +12,7 @@ import {
   Zap,
   BarChart3,
   Award,
+  X,
 } from 'lucide-react';
 
 const NAV_ITEMS = [
@@ -27,28 +29,44 @@ const NAV_ITEMS = [
 ];
 
 export function Sidebar({ isOpen, onClose }) {
+  const handleNavClick = () => {
+    if (typeof window !== 'undefined' && window.innerWidth < 1024) {
+      onClose();
+    }
+  };
+
   return (
     <>
       {/* Mobile Backdrop */}
       {isOpen && (
         <div
           onClick={onClose}
-          className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-40 lg:hidden"
+          className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-40 lg:hidden transition-opacity duration-300"
+          aria-hidden="true"
         />
       )}
 
       <aside
-        className={`fixed top-0 bottom-0 left-0 z-40 w-64 bg-white border-r border-slate-200/90 p-4 transition-transform duration-300 ease-in-out lg:translate-x-0 ${
-          isOpen ? 'translate-x-0' : '-translate-x-full'
+        id="app-sidebar"
+        aria-label="Main Navigation"
+        aria-hidden={!isOpen}
+        className={`fixed top-0 bottom-0 left-0 z-40 w-64 bg-white border-r border-slate-200/90 p-4 transition-all duration-300 ease-in-out ${
+          isOpen
+            ? 'translate-x-0 opacity-100 pointer-events-auto'
+            : '-translate-x-full opacity-0 pointer-events-none'
         } flex flex-col justify-between shadow-sm`}
       >
         <div className="space-y-6">
           {/* Mobile Top Brand Header in Sidebar */}
           <div className="lg:hidden flex items-center justify-between pb-4 border-b border-slate-100">
-            <div className="flex items-center gap-2">
-              <span className="text-xl">⚔️</span>
-              <span className="font-bold text-lg text-slate-900">QuestBoard</span>
-            </div>
+            <QuestBoardLogo variant="full" size="md" />
+            <button
+              onClick={onClose}
+              className="p-1.5 rounded-xl text-slate-500 hover:text-slate-900 hover:bg-slate-100 transition-colors"
+              aria-label="Close navigation drawer"
+            >
+              <X className="w-5 h-5" />
+            </button>
           </div>
 
           <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider px-3">
@@ -62,7 +80,7 @@ export function Sidebar({ isOpen, onClose }) {
                 <NavLink
                   key={item.path}
                   to={item.path}
-                  onClick={onClose}
+                  onClick={handleNavClick}
                   className={({ isActive }) =>
                     `flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all duration-150 ${
                       isActive

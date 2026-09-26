@@ -5,7 +5,8 @@ import { LevelBadge } from '../gamification/LevelBadge';
 import { XPBar } from '../gamification/XPBar';
 import { StreakBadge } from '../gamification/StreakBadge';
 import { CoinCounter } from '../gamification/CoinCounter';
-import { Bell, Menu, X, LogOut, User, Settings, CheckCheck, Compass } from 'lucide-react';
+import { Bell, Menu, X, LogOut, User, Settings, CheckCheck, Compass, PanelLeftClose } from 'lucide-react';
+import { QuestBoardLogo } from '../QuestBoardLogo';
 import api from '../../services/api';
 
 export function Navbar({ onToggleSidebar, isSidebarOpen }) {
@@ -55,19 +56,26 @@ export function Navbar({ onToggleSidebar, isSidebarOpen }) {
         <div className="flex items-center gap-3">
           <button
             onClick={onToggleSidebar}
-            className="lg:hidden p-2 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors"
-            aria-label="Toggle menu"
+            className="p-2 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 active:bg-slate-200 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500/40"
+            aria-label={isSidebarOpen ? 'Close navigation' : 'Open navigation'}
+            aria-expanded={isSidebarOpen}
+            aria-controls="app-sidebar"
+            title={isSidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'}
           >
-            {isSidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            {isSidebarOpen ? (
+              <PanelLeftClose className="w-5 h-5 text-slate-700" />
+            ) : (
+              <Menu className="w-5 h-5 text-slate-700" />
+            )}
           </button>
 
-          <Link to="/dashboard" className="flex items-center gap-2.5 group">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 to-sky-500 flex items-center justify-center text-white font-black text-lg shadow-sm shadow-blue-500/25 transition-transform group-hover:scale-105">
-              ⚔️
-            </div>
-            <span className="font-extrabold text-xl tracking-tight text-slate-900 hidden sm:inline">
-              Quest<span className="text-blue-600">Board</span>
-            </span>
+          <Link to="/dashboard" className="flex items-center group select-none transition-transform hover:scale-[1.02]">
+            {isSidebarOpen ? (
+              <QuestBoardLogo variant="full" size="md" className="hidden sm:inline-flex" />
+            ) : (
+              <QuestBoardLogo variant="icon" size="md" className="hidden sm:inline-flex" />
+            )}
+            <QuestBoardLogo variant="icon" size="md" className="sm:hidden" />
           </Link>
         </div>
 

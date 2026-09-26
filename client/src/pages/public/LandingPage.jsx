@@ -14,6 +14,7 @@ import {
   ChevronRight,
 } from 'lucide-react';
 import { CrtBackground } from '../../shaders/crt/CrtBackground';
+import { QuestBoardLogo } from '../../components/QuestBoardLogo';
 import '../../shaders/threeui.css';
 
 export function LandingPage() {
@@ -46,14 +47,9 @@ export function LandingPage() {
         {/* Top Header */}
         <header className="sticky top-0 z-50 w-full bg-white/90 backdrop-blur-md border-b border-slate-200 px-6 py-4">
           <div className="max-w-7xl mx-auto flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white font-bold text-lg shadow-md shadow-blue-500/20">
-                ⚔️
-              </div>
-              <span className="font-extrabold text-2xl tracking-tight text-slate-900">
-                Quest<span className="text-blue-600">Board</span>
-              </span>
-            </div>
+            <Link to="/" className="flex items-center group select-none transition-transform hover:scale-[1.02]">
+              <QuestBoardLogo variant="full" size="md" showGlow />
+            </Link>
 
             <div className="flex items-center gap-3">
               <Link to="/login" className="px-4 py-2 text-sm font-semibold text-slate-700 hover:text-slate-900 hover:bg-slate-100 rounded-xl transition-colors">

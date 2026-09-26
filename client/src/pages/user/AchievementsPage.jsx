@@ -280,7 +280,7 @@ export function AchievementsPage() {
     <PixelPastelBackground
       animation="interactive"
       density="normal"
-      pixelScale={2}
+      pixelScale={1.5}
       backgroundColor="#FFFFFF"
       speed={1}
       className="min-h-full"

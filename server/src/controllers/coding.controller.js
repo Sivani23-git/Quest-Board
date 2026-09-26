@@ -4,6 +4,7 @@ import { UserLanguageProgress } from '../models/UserLanguageProgress.js';
 import { CodingService, calculateLanguageLevel } from '../services/CodingService.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
 import { AppError } from '../utils/AppError.js';
+import { extractTimezoneFromReq } from '../utils/dateUtils.js';
 
 export const SUPPORTED_LANGUAGES = [
   {
@@ -354,13 +355,16 @@ export const submitCode = asyncHandler(async (req, res, next) => {
     return next(new AppError('Code is required to submit.', 400));
   }
 
+  const timezoneOptions = extractTimezoneFromReq(req);
+
   const result = await CodingService.executeCode(
     req.user.userId,
     req.params.id,
     language,
     code,
     true, // All test cases (including hidden)
-    questId || null
+    questId || null,
+    timezoneOptions
   );
 
   res.status(200).json({

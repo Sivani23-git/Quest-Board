@@ -21,6 +21,7 @@ import {
   Users,
 } from 'lucide-react';
 import api from '../../services/api';
+import PixelChallengesBackground from '../../components/pixel/PixelChallengesBackground';
 
 const CATEGORY_STYLES = {
   quests: {
@@ -176,8 +177,17 @@ export function ChallengesPage() {
   const completedChallenges = challenges.filter((c) => c.isCompleted);
 
   return (
-    <div className="space-y-10 animate-fade-in max-w-6xl mx-auto pb-12">
-      {/* 1. HERO SECTION */}
+    <div className="relative w-full min-h-[calc(100vh-8rem)]">
+      {/* ========================================================================= */}
+      {/* FULL-PAGE PASTEL PIXEL-ART CHALLENGE ARENA BACKGROUND                     */}
+      {/* ========================================================================= */}
+      <PixelChallengesBackground />
+
+      {/* ========================================================================= */}
+      {/* FOREGROUND CONTENT LAYER (LIVE HUB & ACTIVE SPRINTS)                      */}
+      {/* ========================================================================= */}
+      <div className="relative z-10 space-y-10 animate-fade-in max-w-6xl mx-auto pb-12">
+        {/* 1. HERO SECTION */}
       <div className="relative p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-purple-50/80 via-blue-50/60 to-indigo-50/70 border border-slate-200/90 shadow-sm overflow-hidden">
         <div className="absolute top-0 right-0 w-80 h-80 bg-purple-400/10 rounded-full blur-3xl pointer-events-none -mr-16 -mt-16" />
         <div className="absolute bottom-0 left-1/3 w-64 h-64 bg-blue-400/10 rounded-full blur-3xl pointer-events-none" />
@@ -323,7 +333,7 @@ export function ChallengesPage() {
                       <div className="w-full h-2.5 bg-slate-100/90 rounded-full overflow-hidden p-0.5">
                         <div
                           className={`h-full rounded-full transition-all duration-700 bg-gradient-to-r ${catConfig.progressGradient}`}
-                          style={{ width: `${challenge.isJoined ? percent : 0}%` }}
+                          style={{ width: `${Math.min(100, Math.max(0, challenge.isJoined ? percent : 0))}%` }}
                         />
                       </div>
                     </div>
@@ -528,6 +538,7 @@ export function ChallengesPage() {
           </div>
         </div>
       </div>
+    </div>
     </div>
   );
 }

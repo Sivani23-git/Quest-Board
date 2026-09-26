@@ -176,7 +176,7 @@ export function ProfilePage() {
             const prevLevelXP = ((level - 1) * (level - 1)) * 25;
             const progressPercent = Math.min(
               100,
-              Math.max(5, Math.round(((xp - prevLevelXP) / Math.max(1, maxLevelXP - prevLevelXP)) * 100))
+              Math.max(0, Math.round(((xp - prevLevelXP) / Math.max(1, maxLevelXP - prevLevelXP)) * 100))
             );
 
             return (

@@ -59,8 +59,9 @@ export class CodingService {
    * @param {string} code
    * @param {boolean} isSubmit - if true, executes both visible and hidden test cases
    * @param {string|null} questId
+   * @param {object} [options={}] - timezone context
    */
-  static async executeCode(userId, challengeId, language, code, isSubmit = false, questId = null) {
+  static async executeCode(userId, challengeId, language, code, isSubmit = false, questId = null, options = {}) {
     const challenge = await CodingChallenge.findById(challengeId);
     if (!challenge) {
       throw new AppError('Coding challenge not found', 404);
@@ -264,7 +265,7 @@ export class CodingService {
         };
 
         // 4. Update Daily Streak
-        await StreakService.update(userId);
+        const streakResult = await StreakService.update(userId, options);
 
         // 5. Evaluate Achievements
         await AchievementService.evaluate(userId);
@@ -305,6 +306,12 @@ export class CodingService {
       }
     }
 
+    // If already solved previously, but is passed today during submit, still maintain streak
+    let activeStreak = null;
+    if (isSubmit && isAllPassed) {
+      activeStreak = await StreakService.update(userId, options);
+    }
+
     return {
       submissionId: submission?._id || null,
       status: submission?.status || (isAllPassed ? 'passed' : 'failed'),
@@ -322,6 +329,7 @@ export class CodingService {
       xpProgress: xpResult?.progress || null,
       levelUp: xpResult?.levelUp || null,
       coinBalance: coinResult?.coinBalance,
+      streak: activeStreak,
     };
   }
 }

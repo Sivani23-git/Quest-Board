@@ -26,12 +26,18 @@ const api = axios.create({
   timeout: 45000, // 45s timeout to handle free-tier cold starts smoothly
 });
 
-// Request interceptor: attach token
+// Request interceptor: attach token and client timezone context
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('questboard_token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
+    }
+    try {
+      config.headers['x-timezone'] = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
+      config.headers['x-timezone-offset'] = new Date().getTimezoneOffset();
+    } catch {
+      // Ignore if Intl not available
     }
     return config;
   },

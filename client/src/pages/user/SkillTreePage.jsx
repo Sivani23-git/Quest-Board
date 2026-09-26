@@ -23,6 +23,7 @@ import {
   PixelGem,
   PixelCoin,
 } from '../../components/pixel/PixelArt';
+import { PixelSkillTreeBackground } from '../../components/pixel/PixelSkillTreeBackground';
 import api from '../../services/api';
 
 const SKILL_LEVEL_THRESHOLDS = [0, 100, 300, 600, 1000, 1500, 2100, 2800, 3600, 4500, 6000];
@@ -189,14 +190,23 @@ export function SkillTreePage() {
   }
 
   return (
-    <div className="space-y-8 animate-fade-in">
-      {/* Toast Alert */}
-      {successToast && (
-        <div className="fixed bottom-6 right-6 z-50 flex items-center gap-2.5 p-4 rounded-2xl bg-emerald-600 text-white shadow-xl border-2 border-emerald-400 font-bold text-sm animate-bounce">
-          <Sparkles className="w-5 h-5 text-yellow-300" />
-          <span>{successToast}</span>
-        </div>
-      )}
+    <div className="relative w-full min-h-[calc(100vh-8rem)]">
+      {/* ========================================================================= */}
+      {/* FULL-PAGE PASTEL PIXEL-ART SKILL TREE BACKGROUND (LIGHT, AIRY, NO MOUNTAINS)*/}
+      {/* ========================================================================= */}
+      <PixelSkillTreeBackground />
+
+      {/* ========================================================================= */}
+      {/* FOREGROUND SKILL TREE CONTENT LAYER (HIGH READABILITY)                     */}
+      {/* ========================================================================= */}
+      <div className="relative z-10 space-y-8 animate-fade-in">
+        {/* Toast Alert */}
+        {successToast && (
+          <div className="fixed bottom-6 right-6 z-50 flex items-center gap-2.5 p-4 rounded-2xl bg-emerald-600 text-white shadow-xl border-2 border-emerald-400 font-bold text-sm animate-bounce">
+            <Sparkles className="w-5 h-5 text-yellow-300" />
+            <span>{successToast}</span>
+          </div>
+        )}
 
       {/* ========================================================================= */}
       {/* 1. PAGE HEADER                                                             */}
@@ -572,6 +582,7 @@ export function SkillTreePage() {
         )}
       </div>
     </div>
+    </div>
   );
 }
 
@@ -682,7 +693,7 @@ function SkillNodeCard({
             <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden p-0.5 border border-slate-200">
               <div
                 className={`h-full bg-gradient-to-r ${theme.barGradient} rounded-full transition-all duration-500 shadow-xs`}
-                style={{ width: `${Math.max(state === 'IN_PROGRESS' ? 6 : 0, percent)}%` }}
+                style={{ width: `${Math.min(100, Math.max(0, percent))}%` }}
               />
             </div>
           </>
@@ -780,7 +791,7 @@ function SkillInspectorPanel({ skill, allSkills = [], onUnlock, isUnlocking }) {
         <div className="w-full h-2.5 bg-slate-200 rounded-full overflow-hidden p-0.5 border border-slate-300">
           <div
             className={`h-full bg-gradient-to-r ${theme.barGradient} rounded-full transition-all duration-500 shadow-xs`}
-            style={{ width: `${Math.max(state === 'IN_PROGRESS' ? 5 : 0, percent)}%` }}
+            style={{ width: `${Math.min(100, Math.max(0, percent))}%` }}
           />
         </div>
 

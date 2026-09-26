@@ -4,6 +4,8 @@ import { User } from '../models/User.js';
 import { AppError } from '../utils/AppError.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
 import { getLevelProgress } from '../utils/levelUtils.js';
+import { StreakService } from '../services/StreakService.js';
+import { extractTimezoneFromReq } from '../utils/dateUtils.js';
 
 const signToken = (user) => {
   return jwt.sign(
@@ -70,6 +72,8 @@ export const login = asyncHandler(async (req, res, next) => {
   }
 
   const token = signToken(user);
+  const timezoneOptions = extractTimezoneFromReq(req);
+  StreakService.sanitizeUserStreak(user, timezoneOptions);
 
   res.status(200).json({
     success: true,
@@ -95,6 +99,9 @@ export const getMe = asyncHandler(async (req, res, next) => {
   if (!user) {
     return next(new AppError('User account not found.', 404));
   }
+
+  const timezoneOptions = extractTimezoneFromReq(req);
+  StreakService.sanitizeUserStreak(user, timezoneOptions);
 
   res.status(200).json({
     success: true,

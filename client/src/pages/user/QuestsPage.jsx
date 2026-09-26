@@ -10,9 +10,9 @@ import {
   Sparkles,
   ArrowRight,
   Clock,
-  X,
 } from 'lucide-react';
 import api from '../../services/api';
+import PixelQuestBoardBackground from '../../components/pixel/PixelQuestBoardBackground';
 
 export function QuestsPage() {
   const { user, updateUserMetrics, triggerLevelUp } = useAuth();
@@ -109,8 +109,17 @@ export function QuestsPage() {
   };
 
   return (
-    <div className="space-y-6">
-      {/* Page Header */}
+    <div className="relative w-full min-h-[calc(100vh-8rem)]">
+      {/* ========================================================================= */}
+      {/* FULL-PAGE PASTEL PIXEL-ART QUEST BOARD BACKGROUND                         */}
+      {/* ========================================================================= */}
+      <PixelQuestBoardBackground />
+
+      {/* ========================================================================= */}
+      {/* FOREGROUND CONTENT LAYER (QUEST FILTERS, GRID & DIALOGS)                  */}
+      {/* ========================================================================= */}
+      <div className="relative z-10 space-y-6 max-w-7xl mx-auto pb-12">
+        {/* Page Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl sm:text-3xl font-black text-slate-900 flex items-center gap-2.5">
@@ -394,6 +403,7 @@ export function QuestsPage() {
           </div>
         </div>
       )}
+      </div>
     </div>
   );
 }

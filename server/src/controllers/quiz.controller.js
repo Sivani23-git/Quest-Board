@@ -4,6 +4,7 @@ import { User } from '../models/User.js';
 import { QuizService } from '../services/QuizService.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
 import { AppError } from '../utils/AppError.js';
+import { extractTimezoneFromReq } from '../utils/dateUtils.js';
 
 export const getQuizzes = asyncHandler(async (req, res, next) => {
   const quizzes = await Quiz.find()
@@ -107,13 +108,15 @@ export const getQuizById = asyncHandler(async (req, res, next) => {
 
 export const submitQuizAttempt = asyncHandler(async (req, res, next) => {
   const { answers, questId, timeTaken } = req.body;
+  const timezoneOptions = extractTimezoneFromReq(req);
 
   const result = await QuizService.submitAttempt(
     req.user.userId,
     req.params.id,
     answers,
     questId || null,
-    timeTaken || 0
+    timeTaken || 0,
+    timezoneOptions
   );
 
   res.status(200).json({

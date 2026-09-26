@@ -7,6 +7,8 @@ import { Follow } from '../models/Follow.js';
 import { getLevelProgress } from '../utils/levelUtils.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
 import { AppError } from '../utils/AppError.js';
+import { StreakService } from '../services/StreakService.js';
+import { extractTimezoneFromReq } from '../utils/dateUtils.js';
 
 export const getPublicProfile = asyncHandler(async (req, res, next) => {
   const { username } = req.params;
@@ -38,6 +40,9 @@ export const getPublicProfile = asyncHandler(async (req, res, next) => {
     Follow.countDocuments({ followerId: user._id }),
     req.user?.userId ? Follow.exists({ followerId: req.user.userId, followingId: user._id }) : false,
   ]);
+
+  const timezoneOptions = extractTimezoneFromReq(req);
+  StreakService.sanitizeUserStreak(user, timezoneOptions);
 
   res.status(200).json({
     success: true,

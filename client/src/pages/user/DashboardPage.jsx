@@ -285,7 +285,7 @@ export function DashboardPage() {
             <div className="w-full h-3 bg-slate-200/80 rounded-full overflow-hidden p-0.5 border border-slate-300">
               <div
                 className="h-full bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 rounded-full transition-all duration-700 ease-out shadow-xs"
-                style={{ width: `${Math.max(3, Math.min(100, user?.progress?.progressPercent || 0))}%` }}
+                style={{ width: `${Math.min(100, Math.max(0, user?.progress?.progressPercent || 0))}%` }}
               />
             </div>
           </div>
@@ -319,7 +319,7 @@ export function DashboardPage() {
               [ STREAK ]
             </div>
             <div className="text-2xl font-black text-orange-600">
-              {user?.currentStreak || 0} Days
+              {user?.currentStreak || 0} {(user?.currentStreak === 1) ? 'Day' : 'Days'}
             </div>
             <div className="text-xs text-slate-500 font-medium mt-0.5">Active Flame</div>
           </div>
@@ -484,8 +484,23 @@ export function DashboardPage() {
                     'from-pink-500 to-purple-600',
                   ];
                   const gradient = gradients[idx % gradients.length];
-                  const level = skill.userProgress?.level || 1;
-                  const percent = Math.min(100, Math.max(15, ((skill.userProgress?.xp || 0) % 500) / 5));
+                  const skillThresholds = [0, 100, 300, 600, 1000, 1500, 2100, 2800, 3600, 4500];
+                  const xp = skill.userProgress?.xp || 0;
+                  let calcLevel = 1;
+                  for (let i = skillThresholds.length - 1; i >= 0; i--) {
+                    if (xp >= skillThresholds[i]) {
+                      calcLevel = i + 1;
+                      break;
+                    }
+                  }
+                  const currentBase = skillThresholds[calcLevel - 1] || 0;
+                  const nextTarget = skillThresholds[calcLevel] || currentBase + 1000;
+                  const xpInLevel = Math.max(0, xp - currentBase);
+                  const neededInLevel = nextTarget - currentBase;
+                  const percent = neededInLevel > 0
+                    ? Math.min(100, Math.max(0, Math.round((xpInLevel / neededInLevel) * 100)))
+                    : 0;
+                  const level = skill.userProgress?.level || calcLevel;
 
                   return (
                     <div key={skill._id} className="p-3 rounded-2xl bg-slate-50/80 border border-slate-200/80 space-y-1.5">
@@ -550,7 +565,7 @@ export function DashboardPage() {
                 <div className="w-full h-3 bg-slate-200 rounded-full overflow-hidden p-0.5 border border-slate-300">
                   <div
                     className="h-full bg-gradient-to-r from-blue-500 to-teal-400 rounded-full transition-all duration-500 shadow-xs"
-                    style={{ width: `${Math.max(5, Math.min(100, activeLang.userProgress?.progressPercent || 0))}%` }}
+                    style={{ width: `${Math.min(100, Math.max(0, activeLang.userProgress?.progressPercent || 0))}%` }}
                   />
                 </div>
               </div>

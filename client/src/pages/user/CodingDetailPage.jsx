@@ -139,12 +139,13 @@ export function CodingDetailPage() {
         setIsSolved(true);
         setShowRewardModal(true);
 
-        // Update user stats in context if XP was awarded
-        if (res.data.xpEarned) {
+        // Update user stats in context if XP or streak was updated
+        if (res.data.xpEarned || res.data.streak) {
           updateUserMetrics({
-            totalXP: res.data.totalXP !== undefined ? res.data.totalXP : (user?.totalXP || 0) + res.data.xpEarned,
-            coinBalance: res.data.coinBalance !== undefined ? res.data.coinBalance : (user?.coinBalance || 0) + res.data.coinsEarned,
+            totalXP: res.data.totalXP !== undefined ? res.data.totalXP : (user?.totalXP || 0) + (res.data.xpEarned || 0),
+            coinBalance: res.data.coinBalance !== undefined ? res.data.coinBalance : (user?.coinBalance || 0) + (res.data.coinsEarned || 0),
             progress: res.data.xpProgress,
+            ...(res.data.streak?.currentStreak !== undefined ? { currentStreak: res.data.streak.currentStreak } : {}),
             ...(res.data.currentLevel ? { level: res.data.currentLevel } : {}),
           });
 

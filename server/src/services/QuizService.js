@@ -5,12 +5,13 @@ import { ActivityService } from './ActivityService.js';
 import { XPService } from './XPService.js';
 import { CoinService } from './CoinService.js';
 import { AchievementService } from './AchievementService.js';
+import { StreakService } from './StreakService.js';
 
 export class QuizService {
   /**
    * Evaluates submitted quiz answers securely against backend correctIndex.
    */
-  static async submitAttempt(userId, quizId, answers = [], questId = null, timeTaken = 0) {
+  static async submitAttempt(userId, quizId, answers = [], questId = null, timeTaken = 0, options = {}) {
     // Explicitly query +questions.correctIndex for server-side evaluation only
     const quiz = await Quiz.findById(quizId).select('+questions.correctIndex');
     if (!quiz) {
@@ -94,7 +95,11 @@ export class QuizService {
       completedAt: new Date(),
     });
 
+    let streakResult = null;
     if (passed) {
+      // Update daily streak on passing knowledge trial
+      streakResult = await StreakService.update(userId, options);
+
       await ActivityService.log(userId, {
         type: 'quiz_passed',
         title: `Passed Knowledge Trial: ${quiz.title} (${score}%)`,
@@ -120,6 +125,7 @@ export class QuizService {
       coinsEarned,
       isFirstPass: passed && !priorPassed,
       explanations,
+      streak: streakResult,
     };
   }
 }

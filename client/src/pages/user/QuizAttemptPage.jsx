@@ -25,7 +25,7 @@ import api from '../../services/api';
 export function QuizAttemptPage() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { user, refreshUser } = useAuth();
+  const { user, refreshUser, updateUserMetrics } = useAuth();
 
   // Core quiz state
   const [quizData, setQuizData] = useState(null);
@@ -144,9 +144,18 @@ export function QuizAttemptPage() {
       setResult(evalData);
       setQuizState('results');
 
-      // Refresh global user state to reflect newly earned XP / Coins immediately
-      if (evalData.passed && refreshUser) {
-        refreshUser();
+      // Update global user state to reflect newly earned XP, Coins, and Streak immediately
+      if (evalData.passed) {
+        if (updateUserMetrics) {
+          updateUserMetrics({
+            totalXP: (user?.totalXP || 0) + (evalData.xpEarned || 0),
+            coinBalance: (user?.coinBalance || 0) + (evalData.coinsEarned || 0),
+            ...(evalData.streak?.currentStreak !== undefined ? { currentStreak: evalData.streak.currentStreak } : {}),
+          });
+        }
+        if (refreshUser) {
+          refreshUser();
+        }
       }
     } catch (err) {
       console.error('Submission failed:', err);

@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import api from '../../services/api';
 import { QuizCard } from '../../components/quizzes/QuizCard';
+import { PixelQuizzesBackground } from '../../components/pixel/PixelQuizzesBackground';
 
 const CATEGORIES = [
   'All Trials',
@@ -112,8 +113,17 @@ export function QuizzesPage() {
   };
 
   return (
-    <div className="space-y-8 max-w-7xl mx-auto pb-12">
-      {/* Header Banner */}
+    <div className="relative w-full min-h-[calc(100vh-8rem)]">
+      {/* ========================================================================= */}
+      {/* FULL-PAGE MINIMAL PIXEL-ART BACKGROUND FOR KNOWLEDGE QUIZZES              */}
+      {/* ========================================================================= */}
+      <PixelQuizzesBackground />
+
+      {/* ========================================================================= */}
+      {/* FOREGROUND CONTENT LAYER (QUIZ STATS, CATEGORIES & TRIALS)                */}
+      {/* ========================================================================= */}
+      <div className="relative z-10 space-y-8 max-w-7xl mx-auto pb-12 animate-fade-in">
+        {/* Header Banner */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-slate-200/80 pb-6">
         <div>
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-200/80 text-blue-700 text-xs font-semibold mb-2">
@@ -356,6 +366,7 @@ export function QuizzesPage() {
           </div>
         )}
       </div>
+    </div>
     </div>
   );
 }

@@ -313,7 +313,7 @@ export function AchievementsPage() {
           <div className="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
             <div
               className="bg-gradient-to-r from-blue-600 to-indigo-600 h-full rounded-full transition-all duration-500"
-              style={{ width: `${stats.overallPercentage || 0}%` }}
+              style={{ width: `${Math.min(100, Math.max(0, stats.overallPercentage || 0))}%` }}
             />
           </div>
           <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider text-right">
@@ -420,7 +420,7 @@ export function AchievementsPage() {
                     <div className="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
                       <div
                         className="bg-blue-600 h-full rounded-full transition-all"
-                        style={{ width: `${ach.percentage}%` }}
+                        style={{ width: `${Math.min(100, Math.max(0, ach.percentage || 0))}%` }}
                       />
                     </div>
                     <div className="flex justify-between text-[10px] text-slate-400 font-semibold">
@@ -607,7 +607,7 @@ export function AchievementsPage() {
                             ? 'bg-amber-500'
                             : 'bg-blue-600'
                         }`}
-                        style={{ width: `${ach.percentage}%` }}
+                        style={{ width: `${Math.min(100, Math.max(0, ach.percentage || 0))}%` }}
                       />
                     </div>
                   </div>
@@ -794,7 +794,7 @@ export function AchievementsPage() {
                       ? 'bg-amber-500'
                       : 'bg-blue-600'
                   }`}
-                  style={{ width: `${selectedAchievement.percentage}%` }}
+                  style={{ width: `${Math.min(100, Math.max(0, selectedAchievement.percentage || 0))}%` }}
                 />
               </div>
             </div>

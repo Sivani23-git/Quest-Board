@@ -15,7 +15,7 @@ export class QuestService {
   /**
    * Completes and verifies a quest, awarding XP, Coins, Streak, Skill progress, and Achievements.
    */
-  static async completeQuest(userId, questId, { quizAttemptId = null, submissionId = null } = {}) {
+  static async completeQuest(userId, questId, { quizAttemptId = null, submissionId = null } = {}, options = {}) {
     const quest = await Quest.findById(questId);
     if (!quest) {
       throw new AppError('Quest not found', 404);
@@ -107,7 +107,7 @@ export class QuestService {
     );
 
     // 4. Update Streak
-    const streakResult = await StreakService.update(userId);
+    const streakResult = await StreakService.update(userId, options);
 
     // 5. Skill XP Award
     let skillResult = null;

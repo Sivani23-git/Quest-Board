@@ -82,7 +82,17 @@ const corsOptions = {
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
+  allowedHeaders: [
+    'Content-Type',
+    'Authorization',
+    'X-Requested-With',
+    'Accept',
+    'Origin',
+    'x-timezone',
+    'x-timezone-offset',
+    'X-Timezone',
+    'X-Timezone-Offset',
+  ],
   exposedHeaders: ['Set-Cookie'],
   optionsSuccessStatus: 200,
 };
@@ -101,7 +111,7 @@ if (process.env.NODE_ENV !== 'test') {
 app.use('/api/', apiLimiter);
 
 // API Health Check with Database Connectivity Status
-app.get('/api/health', (req, res) => {
+app.get(['/api/health', '/api/v1/health'], (req, res) => {
   const isDbConnected = mongoose.connection.readyState === 1;
   const statusStates = ['disconnected', 'connected', 'connecting', 'disconnecting'];
   const dbState = statusStates[mongoose.connection.readyState] || 'unknown';

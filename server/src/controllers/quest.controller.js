@@ -4,6 +4,7 @@ import { QuestService } from '../services/QuestService.js';
 import { RecommendationService } from '../services/RecommendationService.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
 import { AppError } from '../utils/AppError.js';
+import { extractTimezoneFromReq } from '../utils/dateUtils.js';
 
 export const getQuests = asyncHandler(async (req, res, next) => {
   const { status, category, difficulty, search } = req.query;
@@ -128,7 +129,8 @@ export const deleteQuest = asyncHandler(async (req, res, next) => {
 });
 
 export const completeQuest = asyncHandler(async (req, res, next) => {
-  const result = await QuestService.completeQuest(req.user.userId, req.params.id, req.body);
+  const timezoneOptions = extractTimezoneFromReq(req);
+  const result = await QuestService.completeQuest(req.user.userId, req.params.id, req.body, timezoneOptions);
 
   res.status(200).json({
     success: true,

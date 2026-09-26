@@ -29,7 +29,7 @@ export function XPBar({ progress = {}, showLabel = true }) {
       <div className="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden p-0.5 border border-slate-200">
         <div
           className="xp-bar-fill h-full rounded-full transition-all duration-700 ease-out"
-          style={{ width: `${Math.max(3, Math.min(100, progressPercent))}%` }}
+          style={{ width: `${Math.min(100, Math.max(0, progressPercent))}%` }}
         />
       </div>
     </div>

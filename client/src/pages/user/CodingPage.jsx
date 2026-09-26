@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { CompleteShelfLandingPage } from '../../shaders/landing-pages/LandingPages';
 import { CodingChallengeCard } from '../../components/coding/CodingChallengeCard';
+import { PixelCodingAcademyBackground } from '../../components/pixel/PixelCodingAcademyBackground';
 import api from '../../services/api';
 import '../../shaders/threeui.css';
 
@@ -164,8 +165,17 @@ export function CodingPage() {
     const { userProgress, stages } = learningPath;
 
     return (
-      <div className="space-y-8 animate-fade-in">
-        {/* Navigation Breadcrumb */}
+      <div className="relative w-full min-h-[calc(100vh-8rem)]">
+        {/* ========================================================================= */}
+        {/* FULL-PAGE PASTEL PIXEL-ART CODING ACADEMY BACKGROUND                      */}
+        {/* ========================================================================= */}
+        <PixelCodingAcademyBackground />
+
+        {/* ========================================================================= */}
+        {/* FOREGROUND DRILLDOWN CONTENT LAYER                                        */}
+        {/* ========================================================================= */}
+        <div className="relative z-10 space-y-8 animate-fade-in">
+          {/* Navigation Breadcrumb */}
         <div className="flex items-center justify-between gap-4">
           <button
             onClick={handleBackToAcademy}
@@ -230,7 +240,7 @@ export function CodingPage() {
             <div className="h-2.5 w-full bg-slate-200/80 rounded-full overflow-hidden">
               <div
                 className={`h-full bg-gradient-to-r ${meta.progressBar} rounded-full transition-all duration-500 shadow-xs`}
-                style={{ width: `${userProgress?.progressPercent || 0}%` }}
+                style={{ width: `${Math.min(100, Math.max(0, userProgress?.progressPercent || 0))}%` }}
               />
             </div>
           </div>
@@ -335,13 +345,23 @@ export function CodingPage() {
           </div>
         </div>
       </div>
+      </div>
     );
   }
 
   // Render Academy Landing View (Choose Learning Path)
   return (
-    <div className="space-y-8 animate-fade-in">
-      {/* Header Banner */}
+    <div className="relative w-full min-h-[calc(100vh-8rem)]">
+      {/* ========================================================================= */}
+      {/* FULL-PAGE PASTEL PIXEL-ART CODING ACADEMY BACKGROUND                      */}
+      {/* ========================================================================= */}
+      <PixelCodingAcademyBackground />
+
+      {/* ========================================================================= */}
+      {/* FOREGROUND ACADEMY CONTENT LAYER (3D LIBRARY & LEARNING PATHS)             */}
+      {/* ========================================================================= */}
+      <div className="relative z-10 space-y-8 animate-fade-in">
+        {/* Header Banner */}
       <div className="p-6 sm:p-10 rounded-3xl bg-gradient-to-r from-teal-50/80 via-sky-50/60 to-blue-50/70 border border-slate-200/90 shadow-sm relative overflow-hidden">
         <div className="absolute top-0 right-0 w-96 h-96 bg-blue-400/10 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
 
@@ -456,7 +476,7 @@ export function CodingPage() {
                     <div className="h-2.5 w-full bg-slate-100 rounded-full overflow-hidden border border-slate-200 p-0.5 mb-3">
                       <div
                         className={`h-full bg-gradient-to-r ${meta.progressBar} rounded-full transition-all duration-500 shadow-xs`}
-                        style={{ width: `${Math.max(lang.userProgress?.isStarted ? 6 : 0, lang.userProgress?.progressPercent || 0)}%` }}
+                        style={{ width: `${Math.min(100, Math.max(0, lang.userProgress?.progressPercent || 0))}%` }}
                       />
                     </div>
 
@@ -476,6 +496,7 @@ export function CodingPage() {
           </div>
         </div>
       )}
+    </div>
     </div>
   );
 }

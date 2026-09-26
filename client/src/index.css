@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700;800;900&family=Pixelify+Sans:wght@500;600;700&family=Press+Start+2P&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Pixelify+Sans:wght@500;600;700&family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -139,5 +139,69 @@
     transform: translate(-15%, -15%) scale(1) !important;
   }
 }
+
+/* Pixel Fonts & RPG Helpers */
+.font-press-start {
+  font-family: 'Press Start 2P', monospace;
+}
+
+.font-pixelify {
+  font-family: 'Pixelify Sans', 'Press Start 2P', monospace;
+}
+
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
+}
+
+/* Subtle Interactive RPG 3D Button */
+.btn-rpg-primary {
+  @apply bg-blue-600 hover:bg-blue-700 text-white font-bold px-6 py-3 rounded-xl transition-all duration-200 inline-flex items-center justify-center gap-2;
+  box-shadow: 0 4px 0 #1d4ed8, 0 8px 16px rgba(37, 99, 235, 0.2);
+}
+
+.btn-rpg-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 0 #1d4ed8, 0 12px 20px rgba(37, 99, 235, 0.25);
+}
+
+.btn-rpg-primary:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 #1d4ed8, 0 4px 8px rgba(37, 99, 235, 0.15);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn-rpg-primary:hover,
+  .btn-rpg-primary:active {
+    transform: none !important;
+  }
+}
+
+/* Pixel / RPG Typography */
+.font-press-start {
+  font-family: 'Press Start 2P', monospace !important;
+}
+
+.font-vt323 {
+  font-family: 'VT323', monospace !important;
+}
+
+.font-hero-heading {
+  font-family: 'Press Start 2P', monospace !important;
+  letter-spacing: -0.02em;
+}
+
+.font-hero-desc {
+  font-family: 'VT323', monospace !important;
+  letter-spacing: 0.02em;
+}
+
 
 
